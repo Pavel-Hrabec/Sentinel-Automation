@@ -10,12 +10,12 @@ name: Deploy Content to sentinelautomation [82d317ef-80cc-4b82-8d71-f8edefa6e4e4
 #       directory: '${{ github.workspace }}/SentinelContent'
 
 on: 
-  push:
-    branches: [ main ]
-    paths:
-    - '**'
-    - '!.github/workflows/**'  # this filter prevents other workflow changes from triggering this workflow
-    - '.github/workflows/sentinel-deploy-82d317ef-80cc-4b82-8d71-f8edefa6e4e4.yml'
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
 
 jobs:
   deploy-content:
