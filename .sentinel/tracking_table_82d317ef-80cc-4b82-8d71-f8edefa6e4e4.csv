@@ -1,5 +1,6 @@
 FileName, CommitSha
-D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/Audit log data deletion.json,
+D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/New admin activity.json,
+D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/NRT MFA Rejected by User.json,
 D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/PowerShell Mimikatz.json,
 D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/Correlate Unfamiliar sign-in properties and atypical travel alerts.json,
-D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/New admin activity.json,
+D:/a/Sentinel-Automation/Sentinel-Automation/Analytics-Rule/Audit log data deletion.json,
