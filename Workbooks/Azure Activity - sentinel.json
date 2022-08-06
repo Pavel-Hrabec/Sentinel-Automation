@@ -17,7 +17,7 @@
     },
     "workbookSourceId": {
       "type": "string",
-      "defaultValue": "/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/sentinel/providers/microsoft.operationalinsights/workspaces/sentinel",
+      "defaultValue": "",
       "metadata": {
         "description": "The id of resource instance to which the workbook will be associated"
       }
@@ -340,7 +340,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/sentinel/providers/microsoft.operationalinsights/workspaces/sentinel"
+        ""
       ],
       "fromTemplateId": "sentinel-AzureActivity"
     }
