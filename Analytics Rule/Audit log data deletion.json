@@ -1,0 +1,89 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/02cb77b2-ee1f-4a75-b320-3c47ce365fb7')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/02cb77b2-ee1f-4a75-b320-3c47ce365fb7')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "displayName": "D365 - Audit log data deletion",
+                "description": "Identifies audit log data deletion activity in Dynamics 365. Source Action: Deletion of Audit Logs from Audit Summary View. Deleting Audit History on  Record from Related Tab Data.",
+                "severity": "High",
+                "enabled": true,
+                "query": "Dynamics365Activity\r\n| where TimeGenerated >= ago(90d)\r\n| where Message =~ 'DeleteRecordChangeHistory' or Message =~ 'DeleteAuditData'\r\n| extend ClientIP = split(ClientIP, \":\")[0]\r\n| extend AccountName = split(UserId, \"@\")[0]\r\n| extend UPNSuffix = split(UserId, \"@\")[1]\r\n| project\r\n    TimeGenerated,\r\n    UserId,\r\n    tostring(AccountName),\r\n    tostring(UPNSuffix),\r\n    UserType,\r\n    tostring(ClientIP),\r\n    EntityName,\r\n    Message,\r\n    OriginalObjectId,\r\n    ResultStatus,\r\n    InstanceUrl,\r\n    UserAgent,\r\n    Type,\r\n    Fields",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "Persistence",
+                    "DefenseEvasion",
+                    "Exfiltration"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": null,
+                        "groupByAlertDetails": null,
+                        "groupByCustomDetails": null
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "AccountName"
+                            },
+                            {
+                                "identifier": "UPNSuffix",
+                                "columnName": "UPNSuffix"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "ClientIP"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "URL",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Url",
+                                "columnName": "InstanceUrl"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null
+            }
+        }
+    ]
+}
