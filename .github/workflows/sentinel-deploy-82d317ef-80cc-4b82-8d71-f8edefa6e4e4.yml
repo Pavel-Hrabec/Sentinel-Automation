@@ -10,12 +10,13 @@ name: Deploy Content to sentinelautomation [82d317ef-80cc-4b82-8d71-f8edefa6e4e4
 #       directory: '${{ github.workspace }}/SentinelContent'
 
 on: 
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
+  push:
+    branches: [ main ]
+    paths:
+    - '**'
+    - '!.github/workflows/**'  # this filter prevents other workflow changes from triggering this workflow
+    - '.github/workflows/sentinel-deploy-82d317ef-80cc-4b82-8d71-f8edefa6e4e4.yml'
+
 jobs:
   deploy-content:
     runs-on: windows-latest
@@ -23,13 +24,13 @@ jobs:
       resourceGroupName: 'sentinelautomaton'
       workspaceName: 'sentinelautomation'
       workspaceId: '8e719cf9-32da-4959-89bd-827fa8de3e2c'
-      directory: '${{ github.workspace }}/Analytics-Rule'
+      directory: '${{ github.workspace }}'
       cloudEnv: 'AzureCloud'
       creds: ${{ secrets.AZURE_SENTINEL_CREDENTIALS_82d317ef80cc4b828d71f8edefa6e4e4 }}
-      contentTypes: 'AnalyticsRule'
+      contentTypes: 'AnalyticsRule,Workbook'
       branch: 'main'
       sourceControlId: '82d317ef-80cc-4b82-8d71-f8edefa6e4e4'
-      rootDirectory: '${{ github.workspace }}/Analytics-Rule'
+      rootDirectory: '${{ github.workspace }}'
       githubAuthToken: ${{ secrets.GITHUB_TOKEN }}
       smartDeployment: 'true'
 
