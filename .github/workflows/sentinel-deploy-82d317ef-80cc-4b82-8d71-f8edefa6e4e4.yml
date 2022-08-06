@@ -24,13 +24,13 @@ jobs:
       resourceGroupName: 'sentinelautomaton'
       workspaceName: 'sentinelautomation'
       workspaceId: '8e719cf9-32da-4959-89bd-827fa8de3e2c'
-      directory: '${{ github.workspace }}'
+      directory: '${{ github.workspace }}/Analytics-Rule'
       cloudEnv: 'AzureCloud'
       creds: ${{ secrets.AZURE_SENTINEL_CREDENTIALS_82d317ef80cc4b828d71f8edefa6e4e4 }}
       contentTypes: 'AnalyticsRule'
       branch: 'main'
       sourceControlId: '82d317ef-80cc-4b82-8d71-f8edefa6e4e4'
-      rootDirectory: '${{ github.workspace }}'
+      rootDirectory: '${{ github.workspace }}/Analytics-Rule'
       githubAuthToken: ${{ secrets.GITHUB_TOKEN }}
       smartDeployment: 'true'
 
