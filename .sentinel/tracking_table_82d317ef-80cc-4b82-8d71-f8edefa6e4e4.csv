@@ -1,8 +1,6 @@
 FileName, CommitSha
 Analytics-Rule/Audit log data deletion.json,a4aa667bab459586d6f74b28d344a4aacfddb519
 Analytics-Rule/NRT MFA Rejected by User.json,61f707faa12c0a59e495cc4fe460327c85e1ef7f
-Workbooks/Azure Activity - sentinel.json,91fdd01a89cbaa865d51eeafa0265fe100ec98e4
 Analytics-Rule/Correlate Unfamiliar sign-in properties and atypical travel alerts.json,813facd46bb425353f02881189c66ab3bd912eaf
 Analytics-Rule/New admin activity.json,db684798a8bb4b98b602bc296c5523c50fcc95fb
 Analytics-Rule/PowerShell Mimikatz.json,35b34b56ede68fceea21177a69902c26282b0f02
-Workbooks/DNS - sentinel.json,585a2ad59aa4cbe294ab6c7a817913ca92cc03a6
