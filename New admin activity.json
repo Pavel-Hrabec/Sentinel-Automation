@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/1b2ac858-31d4-4b24-898c-392e65e432f0')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/1b2ac858-31d4-4b24-898c-392e65e432f0')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "displayName": "D365 - New admin activity",
+                "description": "Detects users conducting administrative activity in Dynamics 365 where they have not had admin rights before.",
+                "severity": "Low",
+                "enabled": true,
+                "query": "let baseline_time = 14d;\nlet detection_time = 1h;\nDynamics365Activity\n| where TimeGenerated between(ago(baseline_time)..ago(detection_time))\n| where UserType =~ 'admin'\n| extend Message = tostring(split(OriginalObjectId, ' ')[0])\n| summarize by UserId\n| join kind=rightanti\n    (Dynamics365Activity\n    | where TimeGenerated > ago(detection_time)\n    | where UserType =~ 'admin')\n    on UserId\n| summarize\n    Actions = make_set(Message),\n    MostRecentAction = max(TimeGenerated),\n    IPs=make_set(ClientIP),\n    UserAgents = make_set(UserAgent)\n    by UserId\n| extend timestamp = MostRecentAction, AccountName = tostring(split(UserId, '@')[0]), UPNSuffix = tostring(split(UserId, '@')[1])",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "P14D",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "InitialAccess"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5M",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": null,
+                        "groupByAlertDetails": null,
+                        "groupByCustomDetails": null
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "AccountName"
+                            },
+                            {
+                                "identifier": "UPNSuffix",
+                                "columnName": "UPNSuffix"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null
+            }
+        }
+    ]
+}
