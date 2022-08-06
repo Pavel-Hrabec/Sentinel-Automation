@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/c52eb3c5-c26e-455d-bf45-dbc8d2c5194d')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/c52eb3c5-c26e-455d-bf45-dbc8d2c5194d')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "NRT",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "displayName": "NRT MFA Rejected by User",
+                "description": "Identifies occurrences where a user has rejected an MFA prompt. This could be an indicator that a threat actor has compromised the username and password of this user account and is using it to try and log into the account.\nRef : https://docs.microsoft.com/azure/active-directory/fundamentals/security-operations-user-accounts#monitoring-for-failed-unusual-sign-ins",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "SigninLogs\n| where ResultType == 500121\n| extend additionalDetails_ = tostring(Status.additionalDetails)\n| where additionalDetails_ =~ \"MFA denied; user declined the authentication\"",
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "InitialAccess"
+                ],
+                "techniques": [
+                    "T1078"
+                ],
+                "alertRuleTemplateName": "3617d76d-b15e-4c6f-985e-a1dac73c592d",
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "FullName",
+                                "columnName": "UserPrincipalName"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "IPAddress"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": "1.0.1"
+            }
+        }
+    ]
+}
