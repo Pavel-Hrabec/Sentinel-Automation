@@ -10,7 +10,7 @@
     },
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "sentinelautoomaton",
+      "defaultValue": "sentinelautomaton",
       "metadata": {
         "description": "Name of the resource group where the workbook will be saved."
       }
