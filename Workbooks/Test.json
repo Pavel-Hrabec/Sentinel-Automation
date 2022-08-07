@@ -506,7 +506,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/', parameters('workspaceName'))]"
+        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspaceName'))]"
       ],
       "styleSettings": {
         "paddingStyle": "wide"
@@ -526,7 +526,7 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/', parameters('workspaceName'))]",
+        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspaceName'))]",
 
         "category": "[parameters('workbookType')]"
       }
