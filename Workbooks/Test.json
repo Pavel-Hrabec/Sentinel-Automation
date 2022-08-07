@@ -29,13 +29,6 @@
         "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
       }       
     },
-    "workbookSourceId": {
-      "type": "string",
-      "defaultValue": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/', paramaters('workspaceName'))]",
-      "metadata": {
-        "description": "The id of resource instance to which the workbook will be associated"
-      }
-    },
     "workbookId": {
       "type": "string",
       "defaultValue": "[newGuid()]",
@@ -533,7 +526,8 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "[parameters('workbookSourceId')]",
+        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/', parameters('workspaceName'))]",
+
         "category": "[parameters('workbookType')]"
       }
     }
