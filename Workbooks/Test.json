@@ -506,7 +506,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/sentinelautomaton/providers/microsoft.operationalinsights/workspaces/sentinelautomation"
+        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/', parameters('workspaceName'))]"
       ],
       "styleSettings": {
         "paddingStyle": "wide"
