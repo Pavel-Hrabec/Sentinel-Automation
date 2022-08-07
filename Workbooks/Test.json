@@ -8,20 +8,6 @@
         "description": "The friendly name for the workbook that is used in the Gallery or Saved List.  This name must be unique within a resource group."
       }
     },
-    "ResourceGroupName": {
-      "type": "string",
-      "defaultValue": "default",
-      "metadata": {
-        "description": "Name of the resource group where the workbook will be saved."
-      }
-    },
-    "WorkspaceName": {
-      "type": "string",
-      "defaultValue": "default",
-      "metadata": {
-        "description": "Name of the workspace name where workbook will be saved"
-      }
-    },
     "workbookType": {
       "type": "string",
       "defaultValue": "sentinel",
