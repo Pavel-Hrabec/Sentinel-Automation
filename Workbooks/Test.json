@@ -8,14 +8,16 @@
         "description": "The friendly name for the workbook that is used in the Gallery or Saved List.  This name must be unique within a resource group."
       }
     },
-    "resourceGroupName": {
+    "ResourceGroupName": {
       "type": "string",
+      "defaultValue": "sentinelautomaton",
       "metadata": {
         "description": "Name of the resource group where the workbook will be saved."
       }
     },
-    "workspaceName": {
+    "WorkspaceName": {
       "type": "string",
+      "defaultValue": "sentinelautomation",
       "metadata": {
         "description": "Name of the workspace name where workbook will be saved"
       }
@@ -504,7 +506,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspaceName'))]"
+        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('ResourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('WorkspaceName'))]"
       ],
       "styleSettings": {
         "paddingStyle": "wide"
@@ -524,7 +526,7 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspaceName'))]",
+        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('ResourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('WorkspaceName'))]",
 
         "category": "[parameters('workbookType')]"
       }
