@@ -3,9 +3,23 @@
   "parameters": {
     "workbookDisplayName": {
       "type": "string",
-      "defaultValue": "Custom",
+      "defaultValue": "Test",
       "metadata": {
         "description": "The friendly name for the workbook that is used in the Gallery or Saved List.  This name must be unique within a resource group."
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "SentinelAutomaton",
+      "metadata": {
+        "description": "Name of the resource group where the workbook will be saved."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "defaultValue": "sentinelautomation",
+      "metadata": {
+        "description": "Name of the workspace name where workbook will be saved"
       }
     },
     "workbookType": {
@@ -13,8 +27,7 @@
       "defaultValue": "sentinel",
       "metadata": {
         "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
-      }
-        
+      }       
     },
     "workbookSourceId": {
       "type": "string",
