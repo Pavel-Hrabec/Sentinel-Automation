@@ -1,6 +1,6 @@
 FileName, CommitSha
-Analytics-Rule/NRT MFA Rejected by User.json,61f707faa12c0a59e495cc4fe460327c85e1ef7f
-Analytics-Rule/Correlate Unfamiliar sign-in properties and atypical travel alerts.json,813facd46bb425353f02881189c66ab3bd912eaf
-Analytics-Rule/Audit log data deletion.json,a4aa667bab459586d6f74b28d344a4aacfddb519
 Analytics-Rule/PowerShell Mimikatz.json,35b34b56ede68fceea21177a69902c26282b0f02
+Analytics-Rule/Audit log data deletion.json,a4aa667bab459586d6f74b28d344a4aacfddb519
+Analytics-Rule/Correlate Unfamiliar sign-in properties and atypical travel alerts.json,813facd46bb425353f02881189c66ab3bd912eaf
 New admin activity.json,db684798a8bb4b98b602bc296c5523c50fcc95fb
+Analytics-Rule/NRT MFA Rejected by User.json,61f707faa12c0a59e495cc4fe460327c85e1ef7f
