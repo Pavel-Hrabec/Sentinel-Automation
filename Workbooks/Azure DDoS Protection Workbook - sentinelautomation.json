@@ -1299,7 +1299,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "Azure Monitor"
+        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('ResourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('WorkspaceName'))]"
       ],
       "fromTemplateId": "sentinel-AzDDoSStandardWorkbook"
     }
@@ -1316,7 +1316,7 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "Azure Monitor",
+        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('ResourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('WorkspaceName'))]",
         "category": "[parameters('workbookType')]"
       }
     }
@@ -1327,5 +1327,5 @@
       "value": "[resourceId( 'microsoft.insights/workbooks', parameters('workbookId'))]"
     }
   },
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
 }
