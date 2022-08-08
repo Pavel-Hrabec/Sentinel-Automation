@@ -17,14 +17,12 @@
     },
     "ResourceGroupName": {
       "type": "string",
-      "defaultValue": "test",
       "metadata": {
         "description": "Name of the resource group where the workbook will be saved."
       }
     },
     "WorkspaceName": {
       "type": "string",
-      "defaultValue": "test",
       "metadata": {
         "description": "Name of the workspace name where workbook will be saved"
       }
