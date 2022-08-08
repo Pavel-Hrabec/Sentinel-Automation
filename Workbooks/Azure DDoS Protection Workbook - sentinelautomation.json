@@ -15,13 +15,13 @@
         "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
       }
     },
-    "ResourceGroupName": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "Name of the resource group where the workbook will be saved."
       }
     },
-    "WorkspaceName": {
+    "workspace": {
       "type": "string",
       "metadata": {
         "description": "Name of the workspace name where workbook will be saved"
@@ -1297,7 +1297,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "microsoft.insights/workbooks"
+        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
       ],
       "fromTemplateId": "sentinel-AzDDoSStandardWorkbook"
     }
@@ -1314,7 +1314,7 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "microsoft.insights/workbooks",
+        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
         "category": "[parameters('workbookType')]"
       }
     }
