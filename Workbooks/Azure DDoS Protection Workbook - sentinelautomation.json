@@ -3,23 +3,23 @@
   "parameters": {
     "workbookDisplayName": {
       "type": "string",
-      "defaultValue": "Azure DDoS Protection Workbook - sentinelautomation",
+      "defaultValue": "Test",
       "metadata": {
         "description": "The friendly name for the workbook that is used in the Gallery or Saved List.  This name must be unique within a resource group."
       }
     },
-    "workbookType": {
-      "type": "string",
-      "defaultValue": "sentinel",
-      "metadata": {
-        "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
-      }
-    },
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "test",
+      "defaultValue": "[resourceGroup().name]",
       "metadata": {
-        "description": "Name of the resource group where the workbook will be saved."
+        "description": "Name of the resource group where the workbook will be saved"
+      }
+    },
+    "subscriptionID": {
+      "type": "string",
+      "defaultValue": "[subscription().id]",
+      "metadata": {
+        "description": "Unique subscription ID for tenant where the workbook will be saved"
       }
     },
     "workspace": {
@@ -27,6 +27,13 @@
       "metadata": {
         "description": "Name of the workspace name where workbook will be saved"
       }
+    },
+    "workbookType": {
+      "type": "string",
+      "defaultValue": "sentinel",
+      "metadata": {
+        "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
+      }       
     },
     "workbookId": {
       "type": "string",
@@ -41,85 +48,19 @@
       "version": "Notebook/1.0",
       "items": [
         {
-          "type": 1,
-          "content": {
-            "json": "## Azure DDoS Protection Workbook\n---\n"
-          },
-          "name": "text - 2"
-        },
-        {
-          "type": 11,
-          "content": {
-            "version": "LinkItem/1.0",
-            "style": "tabs",
-            "links": [
-              {
-                "id": "2647367d-91d2-4325-8923-6de1e66ba14f",
-                "cellValue": "selectedTab",
-                "linkTarget": "parameter",
-                "linkLabel": "DDoS Summary",
-                "subTarget": "DDoS Summary",
-                "preText": "DDoS Summary",
-                "style": "link"
-              },
-              {
-                "id": "cf2e2031-1a40-42e2-b7f9-66bdf68e7b41",
-                "cellValue": "selectedTab",
-                "linkTarget": "parameter",
-                "linkLabel": "DDoS Metrics",
-                "subTarget": "DDoS Metrics",
-                "style": "link"
-              },
-              {
-                "id": "e9425dcf-63f3-4cc7-afda-2682cafb513b",
-                "cellValue": "selectedTab",
-                "linkTarget": "parameter",
-                "linkLabel": "DDoS Investigation",
-                "subTarget": "DDoS Investigate",
-                "style": "link"
-              }
-            ]
-          },
-          "name": "links - 23"
-        },
-        {
           "type": 9,
           "content": {
             "version": "KqlParameterItem/1.0",
-            "crossComponentResources": [
-              "value::selected"
-            ],
             "parameters": [
               {
-                "id": "f9e7e362-f017-409a-8b8d-52da17b2df7c",
-                "version": "KqlParameterItem/1.0",
-                "name": "Workspaces",
-                "type": 5,
-                "isRequired": true,
-                "multiSelect": true,
-                "quote": "'",
-                "delimiter": ",",
-                "query": "where type =~ 'microsoft.operationalinsights/workspaces'\r\n| project id, name\r\n| order by name desc",
-                "crossComponentResources": [
-                  "value::selected"
-                ],
-                "value": [],
-                "typeSettings": {
-                  "additionalResourceOptions": [
-                    "value::all"
-                  ]
-                },
-                "queryType": 1,
-                "resourceType": "microsoft.resourcegraph/resources"
-              },
-              {
-                "id": "e04e88aa-42d1-4bd4-a15d-33e4b161e108",
+                "id": "4459cc76-3bf4-4ca1-a981-ac7b57aa245a",
                 "version": "KqlParameterItem/1.0",
                 "name": "TimeRange",
+                "label": "Time range",
                 "type": 4,
                 "isRequired": true,
                 "value": {
-                  "durationMs": 2419200000
+                  "durationMs": 1209600000
                 },
                 "typeSettings": {
                   "selectableValues": [
@@ -173,714 +114,344 @@
                 }
               },
               {
-                "id": "8ae1c617-04d0-4918-ac8e-4ba9083300f3",
+                "id": "594d398d-703f-4e6d-81e7-97ab7803b08f",
                 "version": "KqlParameterItem/1.0",
-                "name": "Resource",
-                "type": 5,
+                "name": "IpAddresses",
+                "label": "IP Addresses",
+                "type": 2,
+                "description": "Choose IP for the queries",
                 "isRequired": true,
                 "multiSelect": true,
                 "quote": "'",
                 "delimiter": ",",
-                "query": "where type =~ 'Microsoft.Network/PublicIPAddresses'\r\n| project id",
-                "crossComponentResources": [
-                  "value::selected"
-                ],
-                "value": [
-                  "value::all"
-                ],
+                "query": "DnsEvents\n| extend IpAddresses = iif(IPAddresses==\"\",\"empty\" ,IPAddresses)\n| summarize by IpAddresses\n| sort by IpAddresses desc",
+                "value": null,
                 "typeSettings": {
                   "additionalResourceOptions": [
                     "value::all"
                   ],
-                  "selectAllValue": "",
-                  "showDefault": false
+                  "selectAllValue": ""
                 },
                 "timeContext": {
                   "durationMs": 0
                 },
                 "timeContextFromParameter": "TimeRange",
-                "queryType": 1,
-                "resourceType": "microsoft.resourcegraph/resources",
-                "label": "Public IP Addresses"
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
               }
             ],
             "style": "pills",
-            "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
           },
+          "name": "parameters - 5"
+        },
+        {
+          "type": 1,
+          "content": {
+            "json": "## Overview"
+          },
+          "name": "text - 4"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| summarize Events= count() by bin_at(TimeGenerated, 1h, now()), SubType\r\n",
+            "size": 0,
+            "title": "Activity, by time",
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "visualization": "timechart"
+          },
+          "customWidth": "50",
           "conditionalVisibility": {
-            "parameterName": "DDoS Summary",
-            "comparison": "isEqualTo"
+            "parameterName": "IpAddresses",
+            "comparison": "isNotEqualTo"
           },
-          "name": "parameters - 2"
+          "name": "query - 1"
         },
         {
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Category == \"DDoSProtectionNotifications\" or Category == \"DDoSMitigationReports\"\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| extend TotalTCPPackets = toint(tostring(parse_json(TrafficOverview_s).Total_TCP_packets))\r\n| extend TotalTCPPacketsDropped =  toint(tostring(parse_json(TrafficOverview_s).Total_TCP_packets_dropped))\r\n| extend TotalUDPPackets =  toint(tostring(parse_json(TrafficOverview_s).Total_UDP_packets))\r\n| extend TotalUDPPacketsDropped =  toint(tostring(parse_json(TrafficOverview_s).Total_UDP_packets_dropped))\r\n| extend TotalOtherPackets =  toint(tostring(parse_json(TrafficOverview_s).Total_other_packets))\r\n| extend TotalOtherPacketsDropped =  toint(tostring(parse_json(TrafficOverview_s).Total_other_packets_dropped))\r\n| extend TotalPackets =  toint(tostring(parse_json(TrafficOverview_s).Total_packets))\r\n| extend TotalPacketsDropped =  toint(tostring(parse_json(TrafficOverview_s).Total_packets_dropped))\r\n| summarize sum(TotalPacketsDropped), sum(TotalPackets), sum(TotalUDPPackets),sum(TotalUDPPacketsDropped),sum(TotalOtherPackets),sum(TotalOtherPacketsDropped),sum(TotalTCPPackets),sum(TotalTCPPacketsDropped)\r\n| extend TotalPackets = sum_TotalPackets , TotalPacketsDropped = sum_TotalPacketsDropped, TotalUDPPackets = sum_TotalUDPPackets, TotalUDPPacketsDropped = sum_TotalUDPPacketsDropped, TotalOtherPackets = sum_TotalOtherPackets, TotalOtherPacketsDropped = sum_TotalOtherPacketsDropped, TotalTCPPackets = sum_TotalTCPPackets, TotalTCPPacketsDropped = sum_TotalTCPPacketsDropped\r\n| project TotalPackets, TotalPacketsDropped, TotalTCPPackets, TotalTCPPacketsDropped, TotalUDPPackets, TotalUDPPacketsDropped, TotalOtherPackets, TotalOtherPacketsDropped \r\n| evaluate narrow()\r\n| extend TableName = Column\r\n| extend Count = Value\r\n| project TableName, Count",
-            "size": 4,
-            "title": "Traffic Overview",
-            "noDataMessage": "You do not have DDOS enabled",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| summarize count()  by SubType\r\n| order by count_ desc \r\n",
+            "size": 0,
+            "title": "Dns events by subtype",
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "tiles",
-            "gridSettings": {
-              "sortBy": [
-                {
-                  "itemKey": "Count",
-                  "sortOrder": 1
-                }
-              ]
-            },
-            "sortBy": [
-              {
-                "itemKey": "Count",
-                "sortOrder": 1
-              }
-            ],
-            "tileSettings": {
-              "titleContent": {
-                "columnMatch": "Count",
-                "formatter": 12,
-                "formatOptions": {
-                  "palette": "auto"
-                },
-                "numberFormat": {
-                  "unit": 17,
-                  "options": {
-                    "style": "decimal",
-                    "useGrouping": false
-                  }
-                }
-              },
-              "subtitleContent": {
-                "columnMatch": "TableName"
-              },
-              "showBorder": true,
-              "size": "auto"
-            }
+            "visualization": "piechart"
           },
-          "customWidth": "100",
-          "name": "Traffic Overview"
+          "customWidth": "25",
+          "conditionalVisibility": {
+            "parameterName": "IpAddresses",
+            "comparison": "isNotEqualTo"
+          },
+          "name": "query - 1 - Copy"
         },
         {
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| sort by TimeGenerated desc\r\n| extend TopAttackVector = tostring(parse_json(AttackVectors_s)[0]) \r\n| extend Total_packets_ = tostring(parse_json(TrafficOverview_s).Total_packets) \r\n| extend Total_packets_dropped_ = todouble(parse_json(TrafficOverview_s).Total_packets_dropped)\r\n| extend TotalPackets =todouble(Total_packets_)\r\n| where TotalPackets > 0\r\n| where TopAttackVector <> \"\"\r\n| take 10\r\n| project TimeGenerated , TopAttackVector , TotalPackets, TotalPacketsDropped = Total_packets_dropped_ , ResourceId , IPAddress, Resource\r\n\r\n",
-            "size": 1,
-            "title": "Last Ten DDoS Attack Reports, select attack to provide resource lookup",
-            "noDataMessage": "No DDoS Attacks Mitigated in~ Selected TimeRange",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| extend type = case(\r\n    QueryType == \"A\", \"IPv4 address record\", \r\n    QueryType == \"AAAA\", \"IPv6 address record\",\r\n    QueryType == \"ANY\", \"All cached records\",\r\n    QueryType == \"CNAME\", \"Canonical name record\",\r\n    QueryType == \"MX\", \"Mail exchange record\",\r\n    QueryType == \"NS\", \"Name server record\",\r\n    QueryType == \"PTR\", \"Pointer record\",\r\n    QueryType == \"SIG\", \"Signature\",\r\n    QueryType == \"SOA\", \"Start of authority record\",\r\n    QueryType == \"SRV\", \"Service locator\",\r\n    QueryType == \"TXT\", \"Text record\",\r\n    strcat('Other'))\r\n| summarize count()  by type\r\n",
+            "size": 0,
+            "title": "DNS events per query type",
             "timeContextFromParameter": "TimeRange",
-            "exportedParameters": [
-              {
-                "fieldName": "IPAddress",
-                "parameterName": "IPAddress",
-                "parameterType": 1
-              },
-              {
-                "fieldName": "ResourceId",
-                "parameterName": "ResourceId",
-                "parameterType": 1,
-                "defaultValue": "ResourceId"
-              },
-              {
-                "fieldName": "Resource",
-                "parameterName": "AttackReport",
-                "parameterType": 1,
-                "defaultValue": "/"
-              }
-            ],
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
+            "visualization": "piechart"
+          },
+          "customWidth": "25",
+          "conditionalVisibility": {
+            "parameterName": "IpAddresses",
+            "comparison": "isNotEqualTo"
+          },
+          "name": "query - 1 - Copy - Copy"
+        },
+        {
+          "type": 1,
+          "content": {
+            "json": "## Domain overview"
+          },
+          "name": "text - 5"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "let data = DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == \"LookupQuery\"\r\n| extend Domain = Name;\r\nlet appData = data\r\n| summarize TotalCount = count() by Domain\r\n| join kind=inner (data\r\n    | make-series Trend = count() default = 0 on TimeGenerated in range({TimeRange:start}, {TimeRange:end}, {TimeRange:grain}) by Domain\r\n    | project-away TimeGenerated) on Domain\r\n| order by TotalCount desc, Domain asc\r\n| project Domain, TotalCount, Trend\r\n| serialize Id = row_number();\r\ndata\r\n| summarize TotalCount = count() by Computer , Domain\r\n| join kind=inner (data\r\n    | make-series Trend = count() default = 0 on TimeGenerated in range({TimeRange:start}, {TimeRange:end}, {TimeRange:grain}) by Domain, Computer\r\n    | project-away TimeGenerated) on Domain, Computer\r\n| order by TotalCount desc, Domain asc\r\n| project Domain, Computer, TotalCount, Trend\r\n| serialize Id = row_number(1000000)\r\n| join kind=inner (appData) on Domain\r\n| project Id, Name = Computer, Type = 'Computer', ['Computer Count'] = TotalCount, Trend, ParentId = Id1\r\n| union (appData \r\n    | project Id, Name = Domain, Type = 'Domain', ['Computer Count'] = TotalCount, Trend )\r\n| order by ['Computer Count'] desc, Name asc\r\n\r\n",
+            "size": 0,
+            "title": "Top domains queried",
+            "timeContextFromParameter": "TimeRange",
+            "exportFieldName": "",
+            "exportParameterName": "ComputerSelector",
+            "exportDefaultValue": "{ \"Name\":\"\", \"Type\":\"*\"}",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "visualization": "table",
             "gridSettings": {
               "formatters": [
                 {
-                  "columnMatch": "TotalPackets",
-                  "formatter": 4,
+                  "columnMatch": "Id",
+                  "formatter": 5,
                   "formatOptions": {
-                    "palette": "coldHot"
-                  },
-                  "numberFormat": {
-                    "unit": 17,
-                    "options": {
-                      "style": "decimal",
-                      "maximumSignificantDigits": 4
-                    }
-                  }
-                },
-                {
-                  "columnMatch": "TotalPacketsDropped",
-                  "formatter": 4,
-                  "formatOptions": {
-                    "palette": "coldHot"
-                  },
-                  "numberFormat": {
-                    "unit": 17,
-                    "options": {
-                      "style": "decimal",
-                      "maximumSignificantDigits": 4
-                    }
-                  }
-                },
-                {
-                  "columnMatch": "Resource",
-                  "formatter": 5
-                },
-                {
-                  "columnMatch": "Total_packets_",
-                  "formatter": 4,
-                  "formatOptions": {
-                    "palette": "hotCold"
-                  },
-                  "numberFormat": {
-                    "unit": 17,
-                    "options": {
-                      "style": "decimal",
-                      "maximumSignificantDigits": 4
-                    }
-                  }
-                },
-                {
-                  "columnMatch": "Total_packets_dropped_",
-                  "formatter": 4,
-                  "formatOptions": {
-                    "palette": "hotCold"
-                  },
-                  "numberFormat": {
-                    "unit": 17,
-                    "options": {
-                      "style": "decimal",
-                      "maximumSignificantDigits": 4
-                    }
-                  }
-                }
-              ]
-            },
-            "tileSettings": {
-              "titleContent": {
-                "columnMatch": "IPAddress",
-                "formatter": 12,
-                "formatOptions": {
-                  "palette": "auto"
-                }
-              },
-              "subtitleContent": {
-                "columnMatch": "TopAttackVector",
-                "formatter": 1
-              },
-              "leftContent": {
-                "columnMatch": "Resource"
-              },
-              "rightContent": {
-                "columnMatch": "TimeGenerated"
-              },
-              "showBorder": true,
-              "size": "auto"
-            }
-          },
-          "customWidth": "50",
-          "name": "query - 7"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "Resources\r\n| where properties contains \"{AttackReport}\"\r\n| project id, name, type, tenantId, location, resourceGroup, subscriptionId",
-            "size": 1,
-            "title": "Resource Lookup, based on Most Recent DDoS Attack Report",
-            "noDataMessage": "Unable to find resources",
-            "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "crossComponentResources": [
-              "value::selected"
-            ]
-          },
-          "customWidth": "50",
-          "name": "query - 24"
-        },
-        {
-          "type": 10,
-          "content": {
-            "chartId": "workbookd3c031a7-09cf-4cfd-bdec-ab452c540328",
-            "version": "MetricsItem/2.0",
-            "size": 0,
-            "chartType": 2,
-            "resourceType": "microsoft.network/publicipaddresses",
-            "metricScope": 0,
-            "resourceParameter": "Resource",
-            "resourceIds": [
-              "{Resource}"
-            ],
-            "timeContextFromParameter": "TimeRange",
-            "timeContext": {
-              "durationMs": 2419200000
-            },
-            "metrics": [
-              {
-                "namespace": "microsoft.network/publicipaddresses",
-                "metric": "microsoft.network/publicipaddresses--PacketCount",
-                "aggregation": 4,
-                "splitBy": null
-              }
-            ],
-            "title": "Public IP Address Packet Count (Average)",
-            "gridSettings": {
-              "rowLimit": 10000
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Metrics"
-          },
-          "name": "metric - 25 - Copy - Copy - Copy - Copy"
-        },
-        {
-          "type": 10,
-          "content": {
-            "chartId": "workbookd3c031a7-09cf-4cfd-bdec-ab452c540328",
-            "version": "MetricsItem/2.0",
-            "size": 0,
-            "chartType": 2,
-            "resourceType": "microsoft.network/publicipaddresses",
-            "metricScope": 0,
-            "resourceParameter": "Resource",
-            "resourceIds": [
-              "{Resource}"
-            ],
-            "timeContextFromParameter": "TimeRange",
-            "timeContext": {
-              "durationMs": 2419200000
-            },
-            "metrics": [
-              {
-                "namespace": "microsoft.network/publicipaddresses",
-                "metric": "microsoft.network/publicipaddresses--ByteCount",
-                "aggregation": 4,
-                "splitBy": null
-              }
-            ],
-            "title": "Public IP Address Byte Count (Average)",
-            "gridSettings": {
-              "rowLimit": 10000
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Metrics"
-          },
-          "name": "metric - 25 - Copy - Copy - Copy - Copy - Copy"
-        },
-        {
-          "type": 10,
-          "content": {
-            "chartId": "workbookd3c031a7-09cf-4cfd-bdec-ab452c540328",
-            "version": "MetricsItem/2.0",
-            "size": 0,
-            "chartType": 2,
-            "resourceType": "microsoft.network/publicipaddresses",
-            "metricScope": 0,
-            "resourceParameter": "Resource",
-            "resourceIds": [
-              "{Resource}"
-            ],
-            "timeContextFromParameter": "TimeRange",
-            "timeContext": {
-              "durationMs": 2419200000
-            },
-            "metrics": [
-              {
-                "namespace": "microsoft.network/publicipaddresses",
-                "metric": "microsoft.network/publicipaddresses--DDoSTriggerSYNPackets",
-                "aggregation": 3,
-                "splitBy": null
-              }
-            ],
-            "title": "Inbound SYN Packets to trigger DDoS (MAX)",
-            "gridSettings": {
-              "rowLimit": 10000
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Metrics"
-          },
-          "name": "metric - 25"
-        },
-        {
-          "type": 10,
-          "content": {
-            "chartId": "workbookd3c031a7-09cf-4cfd-bdec-ab452c540328",
-            "version": "MetricsItem/2.0",
-            "size": 0,
-            "chartType": 2,
-            "resourceType": "microsoft.network/publicipaddresses",
-            "metricScope": 0,
-            "resourceParameter": "Resource",
-            "resourceIds": [
-              "{Resource}"
-            ],
-            "timeContextFromParameter": "TimeRange",
-            "timeContext": {
-              "durationMs": 2419200000
-            },
-            "metrics": [
-              {
-                "namespace": "microsoft.network/publicipaddresses",
-                "metric": "microsoft.network/publicipaddresses--DDoSTriggerTCPPackets",
-                "aggregation": 3,
-                "splitBy": null
-              }
-            ],
-            "title": "Inbound TCP Packets to trigger DDoS (MAX)",
-            "gridSettings": {
-              "rowLimit": 10000
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Metrics"
-          },
-          "name": "metric - 25 - Copy"
-        },
-        {
-          "type": 10,
-          "content": {
-            "chartId": "workbookd3c031a7-09cf-4cfd-bdec-ab452c540328",
-            "version": "MetricsItem/2.0",
-            "size": 0,
-            "chartType": 2,
-            "resourceType": "microsoft.network/publicipaddresses",
-            "metricScope": 0,
-            "resourceParameter": "Resource",
-            "resourceIds": [
-              "{Resource}"
-            ],
-            "timeContextFromParameter": "TimeRange",
-            "timeContext": {
-              "durationMs": 2419200000
-            },
-            "metrics": [
-              {
-                "namespace": "microsoft.network/publicipaddresses",
-                "metric": "microsoft.network/publicipaddresses--DDoSTriggerUDPPackets",
-                "aggregation": 3,
-                "splitBy": null
-              }
-            ],
-            "title": "Inbound UDP Packets to trigger DDoS (MAX)",
-            "gridSettings": {
-              "rowLimit": 10000
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Metrics"
-          },
-          "name": "metric - 25 - Copy - Copy"
-        },
-        {
-          "type": 10,
-          "content": {
-            "chartId": "workbookd3c031a7-09cf-4cfd-bdec-ab452c540328",
-            "version": "MetricsItem/2.0",
-            "size": 0,
-            "chartType": 2,
-            "resourceType": "microsoft.network/publicipaddresses",
-            "metricScope": 0,
-            "resourceParameter": "Resource",
-            "resourceIds": [
-              "{Resource}"
-            ],
-            "timeContextFromParameter": "TimeRange",
-            "timeContext": {
-              "durationMs": 2419200000
-            },
-            "metrics": [
-              {
-                "namespace": "microsoft.network/publicipaddresses",
-                "metric": "microsoft.network/publicipaddresses--IfUnderDDoSAttack",
-                "aggregation": 3,
-                "splitBy": null
-              }
-            ],
-            "title": "Under DDoS Attack or Not (MAX)",
-            "gridSettings": {
-              "rowLimit": 10000
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Metrics"
-          },
-          "name": "metric - 25 - Copy - Copy - Copy"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where Protocols_s <> \"{}\" \r\n| extend DynamicProtocols = todynamic(Protocols_s)\r\n| project DynamicProtocols\r\n| as T\r\n| mv-apply DynamicProtocols on (extend Protocol = tostring(bag_keys(DynamicProtocols)[0])\r\n| project Protocol, value = todouble(DynamicProtocols[Protocol])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T | count), 3)) by Protocol\r\n| extend PercDec = todouble(Percentage)\r\n| render piechart\r\n",
-            "size": 0,
-            "title": "Protocols",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "piechart",
-            "chartSettings": {
-              "ySettings": {
-                "unit": 1,
-                "min": null,
-                "max": null
-              }
-            }
-          },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 16"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where SourceContinents_s <> \"{}\"\r\n| extend DynamicContinents = todynamic(SourceContinents_s) \r\n| project DynamicContinents\r\n| as T\r\n| mv-apply DynamicContinents on (\r\n    extend Continent = tostring(bag_keys(DynamicContinents)[0])\r\n    | project Continent, value = todouble(DynamicContinents[Continent])\r\n)\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T | count), 3)) by Continent\r\n| extend Percent = todouble(Percentage)",
-            "size": 0,
-            "title": "Continent of orgin",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "piechart",
-            "chartSettings": {
-              "ySettings": {
-                "unit": 1,
-                "min": null,
-                "max": null
-              }
-            }
-          },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 13 - Copy"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where TopSourceCountries_s <> \"{}\"\r\n| extend DynamicCountries = todynamic(TopSourceCountries_s)\r\n| project DynamicCountries\r\n| as T\r\n| mv-apply DynamicCountries\r\non (extend Countries = tostring(bag_keys(DynamicCountries)[0])\r\n| project Countries, value = todouble(DynamicCountries[Countries])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T\r\n| count), 3)) by Countries\r\n| sort by Percentage desc\r\n| extend Percent = todouble(Percentage)",
-            "size": 0,
-            "title": "Countries of Origin",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "piechart",
-            "chartSettings": {
-              "ySettings": {
-                "unit": 1,
-                "min": null,
-                "max": null
-              }
-            }
-          },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 13 - Copy"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where TopSourceASNs_s <> \"{}\"\r\n| extend DynamicASNs = todynamic(TopSourceASNs_s)\r\n| project DynamicASNs\r\n| as T\r\n| mv-apply DynamicASNs on (extend ASN = tostring(bag_keys(DynamicASNs)[0])\r\n| project ASN, value = todouble(DynamicASNs[ASN])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T | count), 3)) by ASN\r\n| extend PercDec = todouble(Percentage)\r\n| sort by PercDec desc\r\n| render piechart",
-            "size": 0,
-            "title": "AS Numbers",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "chartSettings": {
-              "ySettings": {
-                "unit": 1,
-                "min": null,
-                "max": null
-              }
-            }
-          },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 15 - Copy",
-          "styleSettings": {
-            "margin": "15"
-          }
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where DropReasons_s <> \"{}\"\r\n| extend DynamicDroppedReasons = todynamic(DropReasons_s)\r\n| project DynamicDroppedReasons\r\n| as T\r\n| mv-apply DynamicDroppedReasons on (extend Reasons = tostring(bag_keys(DynamicDroppedReasons)[0])\r\n| project Reasons, value = todouble(DynamicDroppedReasons[Reasons])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T\r\n| count), 3)) by Reasons\r\n| extend PercDec = todouble(Percentage)\r\n| render piechart",
-            "size": 0,
-            "title": "Drop Reasons",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "gridSettings": {
-              "formatters": [
-                {
-                  "columnMatch": "count_",
-                  "formatter": 4,
-                  "formatOptions": {
-                    "palette": "coldHot",
                     "showIcon": true
                   }
                 },
                 {
-                  "columnMatch": "Count",
+                  "columnMatch": "Computer Count",
+                  "formatter": 8,
+                  "formatOptions": {
+                    "min": 0,
+                    "palette": "lightBlue",
+                    "showIcon": true
+                  }
+                },
+                {
+                  "columnMatch": "Trend",
+                  "formatter": 9,
+                  "formatOptions": {
+                    "min": 0,
+                    "palette": "gray",
+                    "showIcon": true
+                  }
+                },
+                {
+                  "columnMatch": "ParentId",
+                  "formatter": 5,
+                  "formatOptions": {
+                    "showIcon": true
+                  }
+                },
+                {
+                  "columnMatch": "Queries",
+                  "formatter": 4,
+                  "formatOptions": {
+                    "min": 0,
+                    "palette": "blueDark",
+                    "showIcon": true
+                  }
+                }
+              ],
+              "filter": true,
+              "hierarchySettings": {
+                "idColumn": "Id",
+                "parentColumn": "ParentId",
+                "treeType": 0,
+                "expanderColumn": "Name"
+              }
+            }
+          },
+          "customWidth": "50",
+          "name": "query - 1 - Copy - Copy - Copy - Copy"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "let Selector = dynamic({ComputerSelector});\r\nDnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where (Selector.Type == '*' or (Selector.Type == 'Computer' and Computer == Selector.Name)) or (Selector.Type == '*' or (Selector.Type == 'Domain' and Name == Name))\r\n| where SubType == \"LookupQuery\" \r\n| summarize Domains = dcount(Name) by bin_at(TimeGenerated, 1h, now())\r\n\r\n",
+            "size": 0,
+            "title": "Unique domains queried",
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "visualization": "timechart"
+          },
+          "customWidth": "50",
+          "name": "query - 1 - Copy - Copy - Copy"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| extend NameParts = split(Name,'.')\r\n//Break the domain into its parts\r\n| extend Top_Level_Domain =  strcat(NameParts[toint(array_length(NameParts)-2)],'.',NameParts[toint(array_length(NameParts)-1)] )\r\n//Use the rightmost parts of the URL\r\n| extend Top_Level_Domain = iif(strlen(Top_Level_Domain)<7,strcat(NameParts[toint(array_length(NameParts)-3)],'.',Top_Level_Domain),Top_Level_Domain)\r\n//If the two right most parts are too short (e.g. \"co.uk\" or \"com.tr\", add another part\r\n| summarize SubDomainCount = count() by Top_Level_Domain, Name\r\n| join kind= inner\r\n(\r\n    DnsEvents\r\n    | extend NameParts = split(Name,'.')\r\n    //Break the domain into its parts\r\n    | extend Top_Level_Domain =  strcat(NameParts[toint(array_length(NameParts)-2)],'.',NameParts[toint(array_length(NameParts)-1)] )\r\n    //Use the rightmost parts of the URL\r\n    | extend Top_Level_Domain = iif(strlen(Top_Level_Domain)<7,strcat(NameParts[toint(array_length(NameParts)-3)],'.',Top_Level_Domain),Top_Level_Domain)\r\n    //If the two right most parts are too short (e.g. \"co.uk\" or \"com.tr\", add another part\r\n    | summarize Total_Sub_Domains = count() by Top_Level_Domain\r\n)\r\non Top_Level_Domain\r\n| extend pk = SubDomainCount/todouble(Total_Sub_Domains)\r\n| extend h1= -log2(pk)*pk\r\n//calculate entropy according to Sannon function https://en.wiktionary.org/wiki/Shannon_entropy\r\n| summarize Sub_Domain_Entropy = sum(h1), Total_Sub_Domains = any(Total_Sub_Domains) ,make_list(Name)  by Top_Level_Domain\r\n| order by Sub_Domain_Entropy desc",
+            "size": 0,
+            "title": "Domain entropy",
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "visualization": "table",
+            "gridSettings": {
+              "formatters": [
+                {
+                  "columnMatch": "Sub_Domain_Entropy",
                   "formatter": 8,
                   "formatOptions": {
                     "palette": "coldHot",
                     "showIcon": true
                   }
+                },
+                {
+                  "columnMatch": "Total_Sub_Domains",
+                  "formatter": 4,
+                  "formatOptions": {
+                    "min": 0,
+                    "palette": "blueDark",
+                    "showIcon": true
+                  }
                 }
               ],
-              "sortBy": [
-                {
-                  "itemKey": "Percentage",
-                  "sortOrder": 2
-                }
-              ]
-            },
-            "sortBy": [
-              {
-                "itemKey": "Percentage",
-                "sortOrder": 2
-              }
-            ],
-            "chartSettings": {
-              "ySettings": {
-                "unit": 1,
-                "min": null,
-                "max": null
-              }
+              "filter": true
             }
           },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
+          "customWidth": "100",
+          "name": "query - 1 - Copy - Copy - Copy - Copy - Copy",
+          "styleSettings": {
+            "showBorder": true
+          }
+        },
+        {
+          "type": 1,
+          "content": {
+            "json": "## Malicious traffic on DNS servers"
           },
-          "name": "Top Attack Vectors - Copy"
+          "name": "text - 9"
         },
         {
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where Protocols_s <> \"{}\"\r\n| extend DynamicProtocols = todynamic(Protocols_s)\r\n| project DynamicProtocols\r\n| as T\r\n| mv-apply DynamicProtocols on (extend Protocol = tostring(bag_keys(DynamicProtocols)[0])\r\n| project Protocol, value = todouble(DynamicProtocols[Protocol])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T\r\n| count), 3), \"%\") by Protocol\r\n| sort by Percentage desc",
-            "size": 1,
-            "title": "Protocols",
+            "query": "DnsInventory\r\n| where SubType == \"Server\"\r\n| project Computer, DomainName, ForestName, ServerIPs",
+            "size": 0,
+            "title": "Active servers",
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
+            "gridSettings": {
+              "filter": true
+            }
           },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 16 - Copy"
+          "name": "query - 10"
         },
         {
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where SourceContinents_s <> \"{}\"\r\n| extend DynamicContinents = todynamic(SourceContinents_s) \r\n| project DynamicContinents\r\n| as T\r\n| mv-apply DynamicContinents on (\r\n    extend Continent = tostring(bag_keys(DynamicContinents)[0])\r\n    | project Continent, value = todouble(DynamicContinents[Continent])\r\n)\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T | count), 3), \"%\") by Continent\r\n| sort by Percentage desc",
-            "size": 1,
-            "title": "Continent of orgin",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == 'LookupQuery' and isnotempty(MaliciousIP)\r\n| summarize Attempts = count() by  Computer,RemoteIPCountry, IndicatorThreatType\r\n| order by Attempts desc",
+            "size": 0,
+            "title": "Malicious traffic",
+            "noDataMessage": "No malicious traffic",
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
+            "visualization": "table",
+            "gridSettings": {
+              "formatters": [
+                {
+                  "columnMatch": "Attempts",
+                  "formatter": 4,
+                  "formatOptions": {
+                    "min": 0,
+                    "palette": "orange",
+                    "showIcon": true
+                  }
+                }
+              ]
+            }
           },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 13"
+          "customWidth": "40",
+          "name": "query - 11"
         },
         {
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where TopSourceCountries_s <> \"{}\"\r\n| extend DynamicCountries = todynamic(TopSourceCountries_s)\r\n| project DynamicCountries\r\n| as T\r\n| mv-apply DynamicCountries on (extend Countries = tostring(bag_keys(DynamicCountries)[0])\r\n| project Countries, value = todouble(DynamicCountries[Countries])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T\r\n| count), 3), \"%\") by Countries\r\n| sort by Percentage desc",
-            "size": 1,
-            "title": "Countries of Origin",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == 'LookupQuery' and isnotempty(MaliciousIP)\r\n| summarize Attempts = count() by ClientIP, MaliciousIP\r\n| project ClientIP , MaliciousIP, Attempts",
+            "size": 0,
+            "title": "Malicious traffic by client IP address",
+            "noDataMessage": "No malicious traffic",
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
+            "visualization": "table",
+            "gridSettings": {
+              "formatters": [
+                {
+                  "columnMatch": "Attempts",
+                  "formatter": 4,
+                  "formatOptions": {
+                    "min": 0,
+                    "palette": "orange",
+                    "showIcon": true
+                  }
+                }
+              ]
+            }
           },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
+          "customWidth": "40",
+          "name": "query - 11 - Copy"
+        },
+        {
+          "type": 1,
+          "content": {
+            "json": "## Dynamic registration"
+          },
+          "name": "text - 13"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == \"DynamicRegistration\"\r\n| summarize count() by Result\r\n",
+            "size": 0,
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "visualization": "table",
+            "gridSettings": {
+              "formatters": [
+                {
+                  "columnMatch": "count_",
+                  "formatter": 8,
+                  "formatOptions": {
+                    "palette": "purpleBlue",
+                    "showIcon": true
+                  }
+                }
+              ]
+            }
           },
           "name": "query - 14"
         },
@@ -888,419 +459,65 @@
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where TopSourceASNs_s <> \"{}\"\r\n| extend DynamicASNs = todynamic(TopSourceASNs_s)\r\n| project DynamicASNs\r\n| as T\r\n| mv-apply DynamicASNs on (extend ASN = tostring(bag_keys(DynamicASNs)[0])\r\n| project ASN, value = todouble(DynamicASNs[ASN])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T\r\n| count), 3), \"%\") by ASN\r\n| sort by Percentage desc",
-            "size": 1,
-            "title": "AS Numbers",
+            "query": "//DNS Configuration Events\r\nDnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == \"ConfigurationChange\"\r\n| project TimeGenerated, Category = TaskCategory, Event_ID = EventId",
+            "size": 0,
+            "title": "Configuration events",
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          },
+          "name": "query - 14 - Copy"
+        },
+        {
+          "type": 1,
+          "content": {
+            "json": "## Lookup queries"
+          },
+          "name": "text - 17"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == \"LookupQuery\"\r\n| extend Reasons = case(\r\n    ResultCode == 0, \"No Error\",\r\n    ResultCode == 1, \"Format Error\",\r\n    ResultCode == 2, \"Server Failure\",\r\n    ResultCode == 3, \"Non-Existent Domain\",\r\n    ResultCode == 4, \"Not Implemented\",\r\n    ResultCode == 5, \"Query Refused\",\r\n    ResultCode == 6, \"Name Exists when it should not\",\r\n    ResultCode == 7, \"RR Set Exists when it should not\",\r\n    ResultCode == 8, \"RR Set that should exist does not\",\r\n    ResultCode == 9, \"Server Not Authoritative for zone\",\r\n    ResultCode == 10, \"Name not contained in zone\",\r\n    ResultCode == 16, \"TSIG Signature Failure\",\r\n    ResultCode == 17, \"Key not recognized\",\r\n    ResultCode == 18, \"Signature out of time window\",\r\n    ResultCode == 19, \"Bad TKEY Mode\",\r\n    ResultCode == 20, \"Duplicate key name\",\r\n    ResultCode == 21, \"Algorithm not supported\",\r\n    ResultCode == 22, \"Bad Truncation\",\r\n    ResultCode == 23, \"Bad/missing Server Cookie\",\r\n    strcat('Other', ResultCode))\r\n| summarize count() by Reasons",
+            "size": 0,
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
+            "visualization": "piechart"
           },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 15",
+          "customWidth": "50",
+          "name": "query - 18",
           "styleSettings": {
-            "margin": "15"
+            "margin": "50"
           }
         },
         {
           "type": 3,
           "content": {
             "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| where DropReasons_s <> \"{}\"\r\n| extend DynamicDroppedReasons = todynamic(DropReasons_s)\r\n| project DynamicDroppedReasons\r\n| as T\r\n| mv-apply DynamicDroppedReasons on (extend Reasons = tostring(bag_keys(DynamicDroppedReasons)[0])\r\n| project Reasons, value = todouble(DynamicDroppedReasons[Reasons])  )\r\n| summarize Percentage = strcat(round(100 * sum(value) / toscalar(T\r\n| count), 3), \"%\") by Reasons\r\n| sort by Percentage desc",
-            "size": 1,
-            "title": "Drop Reasons",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "gridSettings": {
-              "formatters": [
-                {
-                  "columnMatch": "count_",
-                  "formatter": 4,
-                  "formatOptions": {
-                    "palette": "coldHot",
-                    "showIcon": true
-                  }
-                },
-                {
-                  "columnMatch": "Count",
-                  "formatter": 8,
-                  "formatOptions": {
-                    "palette": "coldHot",
-                    "showIcon": true
-                  }
-                }
-              ],
-              "sortBy": [
-                {
-                  "itemKey": "Percentage",
-                  "sortOrder": 2
-                }
-              ]
-            },
-            "sortBy": [
-              {
-                "itemKey": "Percentage",
-                "sortOrder": 2
-              }
-            ]
-          },
-          "customWidth": "20",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "Top Attack Vectors"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| project  TimeGenerated, ResourceGroup, SubscriptionId, Resource, ResourceType, Message, ReportType = ReportType_s, MitigationStartingTime = MitigationPeriodStart_t, MitigationEndingTime = MitigationPeriodEnd_t, IPAddress, AttackVectors =  AttackVectors_s, TrafficOverview = TrafficOverview_s,Protocols = Protocols_s, DropReasons = DropReasons_s",
+            "query": "DnsEvents\r\n| extend IPAddresses = iif(IPAddresses==\"\", \"empty\", IPAddresses)\r\n| where \"*\" in ({IpAddresses}) or IPAddresses in ({IpAddresses})\r\n| where SubType == \"LookupQuery\"\r\n| summarize count() by ClientIP\r\n| order by count_ desc\r\n| project IP = ClientIP , Queries=count_\r\n",
             "size": 0,
-            "title": "Raw DDoS Mitigation Logs",
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
-          },
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 23"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationFlowLogs\"\r\n| project  TimeGenerated, ResourceGroup, SubscriptionId, Resource, ResourceType, Message, SourcePublicIPAddress = sourcePublicIpAddress_s, SourcePorts = sourcePort_s, DestinationPublicIpAddress = destPublicIpAddress_s, DestinationPorts = destPort_s, Protocol = protocol_s, ResouceID = _ResourceId\r\n",
-            "size": 0,
-            "title": "Raw DDoS Flow Logs",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
-          },
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Summary"
-          },
-          "name": "query - 22"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationFlowLogs\" \r\n| where Message == \"Packet was forwarded to service\" \r\n| summarize count() by strcat(protocol_s, destPort_s) ",
-            "size": 4,
-            "showAnalytics": true,
-            "title": "Allowed Traffic During Mitigation",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "tiles",
-            "tileSettings": {
-              "titleContent": {
-                "formatter": 1
-              },
-              "leftContent": {
-                "columnMatch": "count_",
-                "formatter": 12,
-                "formatOptions": {
-                  "palette": "auto"
-                },
-                "numberFormat": {
-                  "unit": 17,
-                  "options": {
-                    "maximumSignificantDigits": 3,
-                    "maximumFractionDigits": 2
-                  }
-                }
-              },
-              "secondaryContent": {
-                "columnMatch": "Column1"
-              },
-              "showBorder": false
-            },
-            "graphSettings": {
-              "type": 0,
-              "topContent": {
-                "columnMatch": "destPort_s",
-                "formatter": 1
-              },
-              "centerContent": {
-                "columnMatch": "count_",
-                "formatter": 1,
-                "numberFormat": {
-                  "unit": 17,
-                  "options": {
-                    "maximumSignificantDigits": 3,
-                    "maximumFractionDigits": 2
-                  }
-                }
-              }
-            }
+            "visualization": "piechart"
           },
           "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 4"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationFlowLogs\" \r\n| where Message startswith \"Protocol violation\" \r\n| summarize count() by strcat(protocol_s, destPort_s) ",
-            "size": 4,
-            "showAnalytics": true,
-            "title": "Dropped Traffic During Mitigation",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "tiles",
-            "tileSettings": {
-              "showBorder": false,
-              "titleContent": {
-                "columnMatch": "Column1",
-                "formatter": 1
-              },
-              "leftContent": {
-                "columnMatch": "count_",
-                "formatter": 12,
-                "formatOptions": {
-                  "palette": "auto"
-                },
-                "numberFormat": {
-                  "unit": 17,
-                  "options": {
-                    "maximumSignificantDigits": 3,
-                    "maximumFractionDigits": 2
-                  }
-                }
-              }
-            }
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 5"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\n| where \"{Resource:label}\" == \"All\" or Resource in~ (split(\"{Resource:label}\", \", \"))\n| where Category == \"DDoSMitigationFlowLogs\" \n| summarize count() by TimeGenerated, sourcePublicIpAddress_s\n",
-            "size": 1,
-            "showAnnotations": true,
-            "showAnalytics": true,
-            "title": "Top Attacking IPs",
-            "timeContextFromParameter": "TimeRange",
-            "timeBrushParameterName": "brushtime",
-            "exportFieldName": "Category",
-            "exportParameterName": "Category",
-            "exportToExcelOptions": "all",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "areachart"
-          },
-          "customWidth": "100",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 2"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSProtectionNotifications\"\r\n| project Message , publicIpAddress_s , ResourceId, TimeGenerated",
-            "size": 0,
-            "showAnalytics": true,
-            "title": "DDoS Mitigation Activity",
-            "timeContextFromParameter": "TimeRange",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "gridSettings": {
-              "formatters": [
-                {
-                  "columnMatch": "ResourceId",
-                  "formatter": 13,
-                  "formatOptions": {
-                    "linkColumn": "ResourceId",
-                    "linkTarget": "Metrics",
-                    "showIcon": true
-                  }
-                }
-              ],
-              "sortBy": [
-                {
-                  "itemKey": "TimeGenerated",
-                  "sortOrder": 1
-                }
-              ]
-            },
-            "sortBy": [
-              {
-                "itemKey": "TimeGenerated",
-                "sortOrder": 1
-              }
-            ]
-          },
-          "customWidth": "50",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 3"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "AzureDiagnostics\r\n| where Resource in~ (split(\"{Resource:label}\", \", \"))\r\n| where Category == \"DDoSMitigationReports\"\r\n| distinct IPAddress",
-            "size": 0,
-            "showAnalytics": true,
-            "title": "All Attacked IP Addresses - Select to Search Related",
-            "timeContextFromParameter": "TimeRange",
-            "exportFieldName": "IPAddress",
-            "exportParameterName": "IPAddress",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "table",
-            "gridSettings": {
-              "sortBy": [
-                {
-                  "itemKey": "IPAddress",
-                  "sortOrder": 1
-                }
-              ]
-            },
-            "sortBy": [
-              {
-                "itemKey": "IPAddress",
-                "sortOrder": 1
-              }
-            ],
-            "tileSettings": {
-              "titleContent": {
-                "columnMatch": "IPAddress",
-                "formatter": 12,
-                "formatOptions": {
-                  "showIcon": true
-                }
-              },
-              "showBorder": false
-            }
-          },
-          "customWidth": "25",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 7"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "search \"{IPAddress}\"\r\n| distinct Type",
-            "size": 0,
-            "showAnalytics": true,
-            "title": "Table Matches - Select to View Logs",
-            "noDataMessage": "Select an IP Address to discovery tables",
-            "timeContextFromParameter": "brushtime",
-            "exportFieldName": "Type",
-            "exportParameterName": "Type",
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ]
-          },
-          "customWidth": "25",
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 8"
-        },
-        {
-          "type": 3,
-          "content": {
-            "version": "KqlItem/1.0",
-            "query": "{Type}\r\n| search \"{IPAddress}\"\r\n| sort by TimeGenerated desc",
-            "size": 0,
-            "showAnalytics": true,
-            "title": "Logs Related to Attacked IP Address",
-            "timeContextFromParameter": "brushtime",
-            "showExportToExcel": true,
-            "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "crossComponentResources": [
-              "{Workspaces}"
-            ],
-            "visualization": "table",
-            "gridSettings": {
-              "filter": true
-            }
-          },
-          "conditionalVisibility": {
-            "parameterName": "selectedTab",
-            "comparison": "isEqualTo",
-            "value": "DDoS Investigate"
-          },
-          "name": "query - 9"
+          "name": "query - 19",
+          "styleSettings": {
+            "margin": "50"
+          }
         }
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
+        "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
       ],
-      "fromTemplateId": "sentinel-AzDDoSStandardWorkbook"
+      "styleSettings": {
+        "paddingStyle": "wide"
+      },
+      "fromTemplateId": "sentinel-UserWorkbook"
     }
   },
   "resources": [
@@ -1315,7 +532,8 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "[concat('/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
+        "sourceId": "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
+
         "category": "[parameters('workbookType')]"
       }
     }
