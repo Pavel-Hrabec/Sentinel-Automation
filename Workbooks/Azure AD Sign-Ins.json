@@ -3,7 +3,7 @@
   "parameters": {
     "workbookDisplayName": {
       "type": "string",
-      "defaultValue": "Azure AD Sign-in logs - sentinelautomation",
+      "defaultValue": "Azure AD Sign-in logs",
       "metadata": {
         "description": "The friendly name for the workbook that is used in the Gallery or Saved List.  This name must be unique within a resource group."
       }
@@ -15,11 +15,18 @@
         "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
       }
     },
-    "workbookSourceId": {
+    "resourceGroupName": {
       "type": "string",
-      "defaultValue": "/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourcegroups/sentinelautomaton/providers/microsoft.operationalinsights/workspaces/sentinelautomation",
+      "defaultValue": "[resourceGroup().name]",
       "metadata": {
-        "description": "The id of resource instance to which the workbook will be associated"
+        "description": "Name of the resource group where the workbook will be saved"
+      }
+    },
+    "subscriptionID": {
+      "type": "string",
+      "defaultValue": "[subscription().id]",
+      "metadata": {
+        "description": "Unique subscription ID for tenant where the workbook will be saved"
       }
     },
     "workspace": {
@@ -1359,7 +1366,7 @@
       ],
       "isLocked": false,
       "fallbackResourceIds": [
-        "[concat('[subscription().id]', '/resourcegroups/', '[resourceGroup().name]', '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
+        "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
       ],
       "fromTemplateId": "sentinel-AzureActiveDirectorySigninLogs"
     }
@@ -1376,7 +1383,7 @@
         "displayName": "[parameters('workbookDisplayName')]",
         "serializedData": "[string(variables('workbookContent'))]",
         "version": "1.0",
-        "sourceId": "[concat('[subscription().id]', '/resourcegroups/', '[resourceGroup().name]', '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
+        "sourceId": "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
         "category": "[parameters('workbookType')]"
       }
     }
