@@ -5,15 +5,15 @@
         "workspace": {
             "type": "string",
             "metadata": {
-                "description": "The name of the Sentinel workspace where the automation rule will be deployed"
+                "description": "The name of the Sentinel workspace where the automation rule will be deployed."
             }
         },
         "automationRuleName": {
             "type": "string",
             "metadata": {
-                "description": "The name of the automation rule that will be deployed"
+                "description": "The name of the automation rule that will be deployed."
             },
-	    "defaultValue": "testRuleRepositories"
+	    "defaultValue": "AutomationRuleFromRepository"
         }
     },
     "variables": {
