@@ -11,6 +11,7 @@
         },
         "displayname": {
             "type": "string",
+            "defaultValue": "test1",
             "metadata": {
                 "description": "Name for your hunting query"
             }
