@@ -2301,9 +2301,9 @@
 }
 },
 "azuresentinel_1": {
-"connectionId": "/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/resourceGroups/Sentinel/providers/Microsoft.Web/connections/azuresentinel",
+"connectionId": "",
 "connectionName": "azuresentinel",
-"id": "/subscriptions/e65c8621-9ded-4164-878c-654bbd1ed607/providers/Microsoft.Web/locations/westeurope/managedApis/azuresentinel"
+"id": ""
 },
 "virustotal": {
 "connectionId": "[resourceId('Microsoft.Web/connections', variables('VirustotalConnectionName'))]",
