@@ -20,7 +20,7 @@
 },
 "parameters": {
 "PlaybookName": {
-"defaultValue": "Get-VirusTotalFileInfo",
+"defaultValue": "VirusTotalFileInfo",
 "type": "string"
 }
 },
