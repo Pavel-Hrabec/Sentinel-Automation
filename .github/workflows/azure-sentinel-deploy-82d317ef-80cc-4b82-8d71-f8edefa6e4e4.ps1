@@ -6,6 +6,7 @@ $WorkspaceId = $Env:workspaceId
 $Directory = $Env:directory
 $Creds = $Env:creds
 $contentTypes = $Env:contentTypes
+$nameofsomething = "D365 - Audit log data deletion"
 $contentTypeMapping = @{
     "AnalyticsRule"=@("Microsoft.OperationalInsights/workspaces/providers/alertRules", "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions");
     "AutomationRule"=@("Microsoft.OperationalInsights/workspaces/providers/automationRules");
@@ -50,7 +51,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-$ParametersFilePath = "parametersfile.json"
+$ParametersFilePath = "parametersfilepath.json"
 @"
 {
     "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -389,7 +390,7 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
                 else 
                 {
                     Write-Host "Deployment 4"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop -nameofsomething $nameofsomething | Out-Host
                 }
             }
             else 
@@ -517,7 +518,7 @@ function GetParameterFile($path) {
         return $defaultParameterFile
     }
     
-    return $ParametersFilePath
+    return $null
 }
 
 function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
