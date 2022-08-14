@@ -521,7 +521,8 @@ function GetParameterFile($path) {
         Write-Host "Test7"
         return $defaultParameterFile
     }
-    
+
+    Write-Host "Didn't find parameter file "
     return $null
 }
 

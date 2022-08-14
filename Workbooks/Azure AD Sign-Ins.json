@@ -26,7 +26,7 @@
       "type": "string",
       "defaultValue": "[subscription().id]",
       "metadata": {
-        "description": "Unique subscription ID for tenant where the workbook will be saved"
+        "description": "Unique subscription ID for tenant where the workbook will be saved."
       }
     },
     "workspace": {
