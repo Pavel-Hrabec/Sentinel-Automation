@@ -91,6 +91,9 @@ $metadataFilePath = "metadata.json"
         "workspace": {
             "type": "string"
         },
+        "resourceGroupName": {
+            "type": "string"
+        },
         "contentId": {
             "type": "string"
         }
@@ -322,7 +325,6 @@ function IsValidTemplate($path, $templateObject) {
     Try {
         if (DoesContainWorkspaceParam $templateObject) {
             Write-Host "Deployment 1"
-            Write-Host $ParametersFilePath
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
         }
         else {
