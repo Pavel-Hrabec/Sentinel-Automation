@@ -61,7 +61,7 @@ $ParametersFilePath = "parameters.json"
             "type": "string",
             "value": "sentinelautomation"
         },
-        "ResourceGroupName": {
+        "resourceGroupName": {
             "type": "string",
             "value": "sentinelautomaton"
         },
@@ -95,6 +95,9 @@ $metadataFilePath = "metadata.json"
             "type": "string"
         },
         "contentId": {
+            "type": "string"
+        },
+        "name": {
             "type": "string"
         }
     },
