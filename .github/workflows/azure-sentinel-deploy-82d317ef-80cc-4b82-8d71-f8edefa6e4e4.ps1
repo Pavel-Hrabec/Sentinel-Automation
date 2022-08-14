@@ -443,8 +443,8 @@ function GenerateDeploymentName() {
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
     $global:parameterFileMapping = @{
-        'Audit log data deletion.json' = $ParametersFilePath
-        'Audit log data deletion.jsond' = $ParametersFilePath
+        'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+        'AnalyticsRulesAudit log data deletion.jsond' = $ParametersFilePath
     }
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
@@ -452,8 +452,8 @@ function LoadDeploymentConfig() {
         if (Test-Path $configPath) {
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
             $parameterFileMappings = @{
-                'Audit log data deletion.json' = $ParametersFilePath
-                'Audit log data deletion.jsond' = $ParametersFilePath
+                'AnalyticsRulesAudit log data deletion.json' = $ParametersFilePath
+                'AnalyticsRulesAudit log data deletion.jsond' = $ParametersFilePath
             }
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
