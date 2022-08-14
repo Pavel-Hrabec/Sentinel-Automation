@@ -50,7 +50,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-ParametersFilePath = "parametersfilepath.json"
+$ParametersFilePath = "parametersfile.json"
 @"
 {
     "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -517,7 +517,7 @@ function GetParameterFile($path) {
         return $defaultParameterFile
     }
     
-    return $null
+    return $ParametersFilePath
 }
 
 function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
