@@ -9,6 +9,9 @@
         },
         "name": {
             "type": "String"
+        },
+        "resourceGroupName": {
+            "type": "String"
         }
     },
     "resources": [

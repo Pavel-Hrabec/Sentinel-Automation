@@ -1,17 +1,18 @@
 {
+  "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "workspace": {
-      "type": "string",
-      "defaultValue": "sentinelautomation"
-    },
-    "resourceGrupName": {
-      "type": "string",
-      "defaultValue": "sentinelautomaton"
-    },
-    "name": {
-      "type": "string",
-      "defaultValue": "D365 - Audit log data deletion"
-    }
+      "workspace": {
+          "type": "string",
+          "value": "sentinelautomation"
+      },
+      "resourceGroupName": {
+          "type": "string",
+          "value": "sentinelautomaton"
+      },
+      "name": {
+          "type": "string",
+          "value": "D365 - Audit log data deletion"
+      }
   }
 }
