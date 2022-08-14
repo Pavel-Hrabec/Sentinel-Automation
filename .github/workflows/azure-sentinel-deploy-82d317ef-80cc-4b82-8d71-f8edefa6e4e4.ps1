@@ -328,11 +328,11 @@ function IsValidTemplate($path, $templateObject) {
     Try {
         if (DoesContainWorkspaceParam $templateObject) {
             Write-Host "Deployment 1"
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $ParametersFilePath
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName #-TemplateParameterFile $ParametersFilePath
         }
         else {
             Write-Host "Deployment 2"
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $ParametersFilePath
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path #-TemplateParameterFile $ParametersFilePath
         }
 
         return $true
@@ -374,41 +374,37 @@ function DoesContainWorkspaceParam($templateObject) {
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
     Write-Host "[Info] Deploying $path with deployment name $deploymentName"
-
     $isValid = IsValidTemplate $path $templateObject
     if (-not $isValid) {
+        Write-Host "Not deploying $path since the template is not valid"
         return $false
     }
     $isSuccess = $false
     $currentAttempt = 0
-    While (($currentAttempt -lt $MaxRetries) -and (-not $isSuccess)) 
+    While (($currentAttempt -lt $MaxAttempts) -and (-not $isSuccess)) 
     {
         $currentAttempt ++
         Try 
         {
-            Write-Host "[Info] Deploy $path with parameter file: [$ParametersFilePath]"
+            Write-Host "[Info] Deploy $path with parameter file: [$parameterFile]"
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
-                    Write-Host "Deployment 3"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
-                    Write-Host "Deployment 4"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
-                    Write-Host "Deployment 5"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
-                    Write-Host "Deployment 6"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
                 }
             }
             AttemptDeployMetadata $deploymentName $ResourceGroupName $templateObject
@@ -425,10 +421,12 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             }
             else 
             {
-                if ($currentAttempt -le $MaxRetries) 
+                if ($currentAttempt -lt $MaxAttempts) 
                 {
-                    Write-Host "[Warning] Failed to deploy $path with error: $err. Retrying in $secondsBetweenAttempts seconds..."
-                    Start-Sleep -Seconds $secondsBetweenAttempts
+                    $retryDelaySeconds = [math]::Pow($initialSecondsBetweenAttempts, $currentAttempt)
+                    $retryDelaySeconds = $retryDelaySeconds - 1
+                    Write-Host "[Warning] Failed to deploy $path with error: $err. Retrying in $retryDelaySeconds seconds..."
+                    Start-Sleep -Seconds $retryDelaySeconds 
                 }
                 else
                 {

@@ -9,6 +9,10 @@
         "name": {
             "type": "String",
             "value": "D365 - Audit log data deletion"
+        },
+        "resourceGroupName": {
+            "type": "String",
+            "value": "sentinelautomaton"
         }
     }
 }
