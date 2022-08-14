@@ -27,6 +27,7 @@ $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
 $global:parameterFileMapping = @{
     'Audit log data deletion.json' = $ParametersFilePath
+    'Audit log data deletion.jsond' = $ParametersFilePath
 }
 
 
@@ -441,7 +442,10 @@ function GenerateDeploymentName() {
 #Load deployment configuration
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
-    $global:parameterFileMapping = @{}
+    $global:parameterFileMapping = @{
+        'Audit log data deletion.json' = $ParametersFilePath
+        'Audit log data deletion.jsond' = $ParametersFilePath
+    }
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
     try {
