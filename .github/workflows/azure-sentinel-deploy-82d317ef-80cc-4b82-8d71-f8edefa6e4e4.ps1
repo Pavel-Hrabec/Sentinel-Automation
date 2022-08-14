@@ -24,11 +24,20 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-$global:parameterFileMapping = @{
-    'workspace'             = $WorkspaceName
-    'ResourceGroupName'     = $ResourceGroupName
-    'name'          = 'D365 - Audit log data deletion'
+$global:parameterFileMapping = @{"workspace": {
+    "type": "string",
+    "Value": $WorkspaceName
+  }
+  "ResourceGroupName": {
+    "type": "string",
+    "Value": $ResourceGroupName
+  },
+  "name": {
+    "type": "string",
+    "name": "D365 - Audit log data deletion"
+    }
 }
+
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
 
@@ -465,22 +474,28 @@ function AbsolutePathWithSlash($relativePath) {
 function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
     $key = ($global:parameterFileMapping.Keys | ? { $_ -eq $index })
+    Write-Host "Test1"
     if ($key) {
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
+        Write-Host "Test2"
         if (Test-Path $mappedParameterFile) {
             return $mappedParameterFile
         }
     }
 
     $parameterFilePrefix = $path.TrimEnd(".json")
-    
+    Write-Host "Test3"
     $workspaceParameterFile = $parameterFilePrefix + ".parameters-$WorkspaceId.json"
+    Write-Host "Test4"
     if (Test-Path $workspaceParameterFile) {
+        Write-Host "Test5"
         return $workspaceParameterFile
     }
     
     $defaultParameterFile = $parameterFilePrefix + ".parameters.json"
+    Write-Host "Test6"
     if (Test-Path $defaultParameterFile) {
+        Write-Host "Test7"
         return $defaultParameterFile
     }
     
@@ -513,6 +528,7 @@ function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
                 return
             }       
             $parameterFile = GetParameterFile $path
+            Write-Host "test 33"
             $result = SmartDeployment $fullDeploymentFlag $remoteShaTable $path $parameterFile $templateObject
             if ($result.isSuccess -eq $false) {
                 $totalFailed++
