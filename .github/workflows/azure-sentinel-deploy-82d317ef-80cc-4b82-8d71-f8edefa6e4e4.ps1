@@ -494,9 +494,9 @@ function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
     $key = ($global:parameterFileMapping.Keys | Where-Object { $_ -eq $index })
     Write-Host $global:parameterFileMapping.Key
-    Write-Host $global:parameterFileMapping.Keys
-    Write-Host $_
-    Write-Host $index
+    Write-Host "Those are keys: $global:parameterFileMapping.Keys"
+    Write-Host "First argument: $_"
+    Write-Host "Second argument: $index"
     Write-Host "Test1"
     Write-Host "$parameterFileMapping"
     Write-Host "$key"
