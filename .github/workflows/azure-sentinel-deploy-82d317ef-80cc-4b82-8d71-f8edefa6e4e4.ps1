@@ -24,19 +24,13 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-$global:parameterFileMapping = @{"workspace": {
-    "type": "string",
-    "Value": $WorkspaceName
-  }
-  "ResourceGroupName": {
-    "type": "string",
-    "Value": $ResourceGroupName
-  },
-  "name": {
-    "type": "string",
-    "name": "D365 - Audit log data deletion"
-    }
+$global:parameterFileMapping = @{
+    'random' = 'random'
+    'workspace'=$WorkspaceName
+    'ResourceGroupName'=$ResourceGroupName
+    'name'='D365 - Audit log data deletion'
 }
+
 
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
