@@ -469,6 +469,8 @@ function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
     $key = ($global:parameterFileMapping.Keys | ? { $_ -eq $index })
     Write-Host "Test1"
+    Write-Host "$parameterFileMapping"
+    Write-Host "$key"
     if ($key) {
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
         Write-Host "Test2"
