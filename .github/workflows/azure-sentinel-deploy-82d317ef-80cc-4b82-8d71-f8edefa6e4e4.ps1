@@ -59,11 +59,11 @@ $ParametersFilePath = "parametersfile.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value: "sentinelautomation"
+            "value": "sentinelautomation"
         },
         "resourceGroupName": {
             "type": "string",
-            "value: "sentinelautomaton"
+            "value": "sentinelautomaton"
         },
         "name": {
             "type": "string",
