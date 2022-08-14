@@ -51,7 +51,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-$ParametersFilePath = "parametersfilepath.json"
+$ParametersFilePath = "parametersfile.json"
 @"
 {
     "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -67,7 +67,7 @@ $ParametersFilePath = "parametersfilepath.json"
         },
         "name": {
             "type": "string",
-            "value: "D365 - Audit log data deletion"
+            "value": "D365 - Audit log data deletion"
         }
     }
 }
@@ -380,24 +380,24 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
         $currentAttempt ++
         Try 
         {
-            Write-Host "[Info] Deploy $path with parameter file: [$parameterFile]"
+            Write-Host "[Info] Deploy $path with parameter file: [$ParametersFilePath]"
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
                     Write-Host "Deployment 3"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
                     Write-Host "Deployment 4"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop -nameofsomething $nameofsomething | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
                     Write-Host "Deployment 5"
-                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
+                    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
