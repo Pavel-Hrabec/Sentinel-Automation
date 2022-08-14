@@ -24,9 +24,14 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-$global:parameterFileMapping = @{}
+$global:parameterFileMapping = @{
+    'workspace'             = $WorkspaceName
+    'ResourceGroupName'     = $ResourceGroupName
+    'name'          = 'D365 - Audit log data deletion'
+}
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
+
 
 $guidPattern = '(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)'
 $namePattern = '([-\w\._\(\)]+)'
