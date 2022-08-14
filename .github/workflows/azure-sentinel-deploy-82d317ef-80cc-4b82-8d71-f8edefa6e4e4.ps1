@@ -386,20 +386,24 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
+                    Write-Host "Hello 1"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "Hello 2"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
+                    Write-Host "Hello 3"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "Hello 4"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
                 }
             }
@@ -502,7 +506,7 @@ function GetParameterFile($path) {
     Write-Host "**************"
     
     Write-Host "**************"
-    Write-Host $global:parameterFileMapping.
+    Write-Host $global:parameterFileMapping
     Write-Host "**************"
 
     Write-Host "First argument: $_"
