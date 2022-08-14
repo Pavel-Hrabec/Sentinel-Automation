@@ -61,10 +61,6 @@ $ParametersFilePath = "parameters.json"
             "type": "string",
             "value": "sentinelautomation"
         },
-        "resourceGroupName": {
-            "type": "string",
-            "value": "sentinelautomaton"
-        },
         "ResourceGroupName": {
             "type": "string",
             "value": "sentinelautomaton"
