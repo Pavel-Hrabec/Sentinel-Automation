@@ -448,25 +448,20 @@ function LoadDeploymentConfig() {
         if (Test-Path $configPath) {
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
             $parameterFileMappings = @{}
-            Write-Host "1st instacnce of [$parameterFileMappings]"
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
             }
-            Write-Host "2st instacnce of [$parameterFileMappings]"
             $key = ($parameterFileMappings.Keys | ? { $_ -eq $workspaceId })
             if ($null -ne $key) {
                 $parameterFileMappings[$key].psobject.properties | ForEach { $global:parameterFileMapping[$_.Name] = $_.Value }
             }
-            Write-Host "3rd instacnce of [$parameterFileMappings]"
             if ($deployment_config.prioritizedcontentfiles) {
                 $global:prioritizedContentFiles = $deployment_config.prioritizedcontentfiles
             }
-            Write-Host "4th instacnce of [$parameterFileMappings]"
             $excludeList = $global:parameterFileMapping.Values + $global:prioritizedcontentfiles
             if ($deployment_config.excludecontentfiles) {
                 $excludeList = $excludeList + $deployment_config.excludecontentfiles
             }
-            Write-Host "6rd instacnce of [$parameterFileMappings]"
             $global:excludeContentFiles = $excludeList | Where-Object { Test-Path (AbsolutePathWithSlash $_) }
         }
     }
@@ -493,8 +488,10 @@ function AbsolutePathWithSlash($relativePath) {
 #resolve parameter file name, return $null if there is none.
 function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
-    Write-Host "$index"
     $key = ($global:parameterFileMapping.Keys | Where-Object { $_ -eq $index })
+    Write-Host $global:parameterFileMapping.Keys
+    Write-Host $_
+    Write-Host "$index"
     Write-Host "Test1"
     Write-Host "$parameterFileMapping"
     Write-Host "$key"
