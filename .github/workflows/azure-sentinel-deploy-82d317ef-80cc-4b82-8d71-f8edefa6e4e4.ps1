@@ -65,6 +65,10 @@ $ParametersFilePath = "parameters.json"
             "type": "string",
             "value": "sentinelautomaton"
         },
+        "ResourceGroupName": {
+            "type": "string",
+            "value": "sentinelautomaton"
+        },
         "name": {
             "type": "string",
             "value": "D365 - Audit log data deletion"
