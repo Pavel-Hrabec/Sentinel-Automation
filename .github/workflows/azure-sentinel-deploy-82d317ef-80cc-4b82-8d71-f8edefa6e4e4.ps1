@@ -386,7 +386,7 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             Write-Host "[Info] Deploy $path with parameter file: [$ParametersFilePath]"
             if (DoesContainWorkspaceParam $templateObject) 
             {
-                if ($parameterFile) {
+                if ($ParametersFilePath) {
                     Write-Host "Deployment 3"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
                 }
@@ -398,7 +398,7 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             }
             else 
             {
-                if ($parameterFile) {
+                if ($ParametersFilePath) {
                     Write-Host "Deployment 5"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $ParametersFilePath -ErrorAction Stop | Out-Host
                 }
