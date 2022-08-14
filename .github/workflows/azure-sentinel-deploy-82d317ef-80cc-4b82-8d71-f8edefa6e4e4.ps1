@@ -254,6 +254,7 @@ function AttemptDeployMetadata($deploymentName, $resourceGroupName, $templateObj
             $contentKind = ToContentKind $sentinelContentKinds $resource $templateObject
             $contentId = $resource.Split("/")[-1]
             try {
+                Write-Host "Deployment 7"
                 New-AzResourceGroupDeployment -Name "md-$deploymentName" -ResourceGroupName $ResourceGroupName -TemplateFile $metadataFilePath `
                     -parentResourceId $resource `
                     -kind $contentKind `
@@ -290,9 +291,11 @@ function ToContentKind($contentKinds, $resource, $templateObject) {
 function IsValidTemplate($path, $templateObject) {
     Try {
         if (DoesContainWorkspaceParam $templateObject) {
+            Write-Host "Deployment 1"
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
         }
         else {
+            Write-Host "Deployment 2"
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
         }
 
@@ -351,20 +354,24 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
+                    Write-Host "Deployment 3"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "Deployment 4"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
+                    Write-Host "Deployment 5"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "Deployment 6"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
                 }
             }

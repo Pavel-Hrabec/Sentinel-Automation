@@ -11,7 +11,7 @@
         "automationRuleName": {
             "type": "string",
             "metadata": {
-                "description": "The name of the automation rule that will be deployed."
+                "description": "The name of the automation rule that will be deployed.."
             },
 	    "defaultValue": "AutomationRuleFromRepository"
         }
