@@ -323,11 +323,11 @@ function IsValidTemplate($path, $templateObject) {
         if (DoesContainWorkspaceParam $templateObject) {
             Write-Host "Deployment 1"
             Write-Host $ParametersFilePath
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $ParametersFilePath -workspace $WorkspaceName
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
         }
         else {
             Write-Host "Deployment 2"
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $ParametersFilePath
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
         }
 
         return $true
