@@ -26,9 +26,7 @@ $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
 $global:parameterFileMapping = @{
-    "workspace" = "sentinelautomation"
-    "ResourceGroupName" = "sentinelautomaton"
-    "name" = "D365 - Audit log data deletion"
+    "Audit log data deletion.json" = $ParametersFilePath
 }
 
 
@@ -95,9 +93,6 @@ $metadataFilePath = "metadata.json"
             "type": "string"
         },
         "contentId": {
-            "type": "string"
-        },
-        "name": {
             "type": "string"
         }
     },
