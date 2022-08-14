@@ -7,7 +7,7 @@
         "workspace": {
             "type": "String"
         },
-        "test": {
+        "nameofsomething": {
             "type": "String"
         }
     },
