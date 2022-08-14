@@ -26,8 +26,8 @@ $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
 $global:parameterFileMapping = @{
-    'Audit log data deletion.json' = $ParametersFilePath
-    'Audit log data deletion.jsond' = $ParametersFilePath
+    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
 }
 
 
