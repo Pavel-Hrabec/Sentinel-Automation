@@ -442,9 +442,9 @@ function GenerateDeploymentName() {
 #Load deployment configuration
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
-    $global:parameterFileMapping = @{
-        'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
-        'AnalyticsRulesAudit log data deletion.jsond' = $ParametersFilePath
+    $global:parameterFileMapping = @{ #It's here defined
+        'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath 
+        'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
     }
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
@@ -452,8 +452,8 @@ function LoadDeploymentConfig() {
         if (Test-Path $configPath) {
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
             $parameterFileMappings = @{
-                'AnalyticsRulesAudit log data deletion.json' = $ParametersFilePath
-                'AnalyticsRulesAudit log data deletion.jsond' = $ParametersFilePath
+                'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+                'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
             }
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
@@ -500,6 +500,11 @@ function GetParameterFile($path) {
     Write-Host "**************"
     Write-Host $global:parameterFileMapping.Keys
     Write-Host "**************"
+    
+    Write-Host "**************"
+    Write-Host $global:parameterFileMapping.
+    Write-Host "**************"
+
     Write-Host "First argument: $_"
     Write-Host "Second argument: $index"
     Write-Host "Test1"
@@ -508,6 +513,7 @@ function GetParameterFile($path) {
     if ($key) {
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
         Write-Host "Test2"
+        Write-Host $mappedParameterFile
         if (Test-Path $mappedParameterFile) {
             return $mappedParameterFile
         }
