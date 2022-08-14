@@ -466,7 +466,8 @@ function AbsolutePathWithSlash($relativePath) {
 #resolve parameter file name, return $null if there is none.
 function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
-    $key = ($global:parameterFileMapping.Keys | ? { $_ -eq $index })
+    Write-Host "$index"
+    $key = ($global:parameterFileMapping.Keys | Where-Object { $_ -eq $index })
     Write-Host "Test1"
     Write-Host "$parameterFileMapping"
     Write-Host "$key"
