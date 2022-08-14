@@ -451,7 +451,10 @@ function LoadDeploymentConfig() {
     try {
         if (Test-Path $configPath) {
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
-            $parameterFileMappings = @{}
+            $parameterFileMappings = @{
+                'Audit log data deletion.json' = $ParametersFilePath
+                'Audit log data deletion.jsond' = $ParametersFilePath
+            }
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
             }
