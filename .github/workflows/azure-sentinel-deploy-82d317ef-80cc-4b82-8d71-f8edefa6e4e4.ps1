@@ -25,10 +25,9 @@ $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
 $global:parameterFileMapping = @{
-    'random' = 'random'
-    'workspace'=$WorkspaceName
-    'ResourceGroupName'=$ResourceGroupName
-    'name'='D365 - Audit log data deletion'
+    "workspace" = "sentinelautomation"
+    "ResourceGroupName" = "sentinelautomaton"
+    "name" = "D365 - Audit log data deletion"
 }
 
 
