@@ -6,6 +6,7 @@ $WorkspaceId = $Env:workspaceId
 $Directory = $Env:directory
 $Creds = $Env:creds
 $contentTypes = $Env:contentTypes
+$nameofsomething = "D365 - Audit log data deletion"
 $contentTypeMapping = @{
     "AnalyticsRule"=@("Microsoft.OperationalInsights/workspaces/providers/alertRules", "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions");
     "AutomationRule"=@("Microsoft.OperationalInsights/workspaces/providers/automationRules");
@@ -24,9 +25,15 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-$global:parameterFileMapping = @{}
+$global:parameterFileMapping = @{
+    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
+}
+
+
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
+
 
 $guidPattern = '(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)'
 $namePattern = '([-\w\._\(\)]+)'
@@ -42,6 +49,28 @@ $sentinelResourcePatterns = @{
 if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
+
+$ParametersFilePath = "parameters.json"
+@"
+{
+    "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "string",
+            "value": "sentinelautomation"
+        },
+        "resourceGroupName": {
+            "type": "string",
+            "value": "sentinelautomaton"
+        },
+        "name": {
+            "type": "string",
+            "value": "D365 - Audit log data deletion"
+        }
+    }
+}
+"@ | Out-File -FilePath $ParametersFilePath
 
 $metadataFilePath = "metadata.json"
 @"
@@ -59,6 +88,9 @@ $metadataFilePath = "metadata.json"
             "type": "string"
         },
         "workspace": {
+            "type": "string"
+        },
+        "resourceGroupName": {
             "type": "string"
         },
         "contentId": {
@@ -254,6 +286,7 @@ function AttemptDeployMetadata($deploymentName, $resourceGroupName, $templateObj
             $contentKind = ToContentKind $sentinelContentKinds $resource $templateObject
             $contentId = $resource.Split("/")[-1]
             try {
+                Write-Host "Deployment 7"
                 New-AzResourceGroupDeployment -Name "md-$deploymentName" -ResourceGroupName $ResourceGroupName -TemplateFile $metadataFilePath `
                     -parentResourceId $resource `
                     -kind $contentKind `
@@ -287,13 +320,15 @@ function ToContentKind($contentKinds, $resource, $templateObject) {
     return $null
 }
 
-function IsValidTemplate($path, $templateObject) {
+function IsValidTemplate($path, $templateObject, $parameterFile) {
     Try {
         if (DoesContainWorkspaceParam $templateObject) {
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
+            Write-Host "Deployment 1"
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile
         }
         else {
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
+            Write-Host "Deployment 2"
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path #-TemplateParameterFile $ParametersFilePath
         }
 
         return $true
@@ -335,14 +370,14 @@ function DoesContainWorkspaceParam($templateObject) {
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
     Write-Host "[Info] Deploying $path with deployment name $deploymentName"
-
-    $isValid = IsValidTemplate $path $templateObject
+    $isValid = IsValidTemplate $path $templateObject $parameterFile
     if (-not $isValid) {
+        Write-Host "Not deploying $path since the template is not valid"
         return $false
     }
     $isSuccess = $false
     $currentAttempt = 0
-    While (($currentAttempt -lt $MaxRetries) -and (-not $isSuccess)) 
+    While (($currentAttempt -lt $MaxAttempts) -and (-not $isSuccess)) 
     {
         $currentAttempt ++
         Try 
@@ -351,20 +386,24 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
+                    Write-Host "Hello 1"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "Hello 2"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
+                    Write-Host "Hello 3"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "Hello 4"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
                 }
             }
@@ -382,10 +421,12 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             }
             else 
             {
-                if ($currentAttempt -le $MaxRetries) 
+                if ($currentAttempt -lt $MaxAttempts) 
                 {
-                    Write-Host "[Warning] Failed to deploy $path with error: $err. Retrying in $secondsBetweenAttempts seconds..."
-                    Start-Sleep -Seconds $secondsBetweenAttempts
+                    $retryDelaySeconds = [math]::Pow($initialSecondsBetweenAttempts, $currentAttempt)
+                    $retryDelaySeconds = $retryDelaySeconds - 1
+                    Write-Host "[Warning] Failed to deploy $path with error: $err. Retrying in $retryDelaySeconds seconds..."
+                    Start-Sleep -Seconds $retryDelaySeconds 
                 }
                 else
                 {
@@ -405,13 +446,19 @@ function GenerateDeploymentName() {
 #Load deployment configuration
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
-    $global:parameterFileMapping = @{}
+    $global:parameterFileMapping = @{ #It's here defined
+        'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath 
+        'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
+    }
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
     try {
         if (Test-Path $configPath) {
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
-            $parameterFileMappings = @{}
+            $parameterFileMappings = @{
+                'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+                'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
+            }
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
             }
@@ -452,26 +499,47 @@ function AbsolutePathWithSlash($relativePath) {
 #resolve parameter file name, return $null if there is none.
 function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
-    $key = ($global:parameterFileMapping.Keys | ? { $_ -eq $index })
+    $key = ($global:parameterFileMapping.Keys | Where-Object { $_ -eq $index })
+    Write-Host $global:parameterFileMapping.Key
+    Write-Host "**************"
+    Write-Host $global:parameterFileMapping.Keys
+    Write-Host "**************"
+    
+    Write-Host "**************"
+    Write-Host $global:parameterFileMapping
+    Write-Host "**************"
+
+    Write-Host "First argument: $_"
+    Write-Host "Second argument: $index"
+    Write-Host "Test1"
+    Write-Host "$parameterFileMapping"
+    Write-Host "$key"
     if ($key) {
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
+        Write-Host "Test2"
+        Write-Host $mappedParameterFile
         if (Test-Path $mappedParameterFile) {
             return $mappedParameterFile
         }
     }
 
     $parameterFilePrefix = $path.TrimEnd(".json")
-    
+    Write-Host "Test3"
     $workspaceParameterFile = $parameterFilePrefix + ".parameters-$WorkspaceId.json"
+    Write-Host "Test4"
     if (Test-Path $workspaceParameterFile) {
+        Write-Host "Test5"
         return $workspaceParameterFile
     }
     
     $defaultParameterFile = $parameterFilePrefix + ".parameters.json"
+    Write-Host "Test6"
     if (Test-Path $defaultParameterFile) {
+        Write-Host "Test7"
         return $defaultParameterFile
     }
-    
+
+    Write-Host "Didn't find parameter file "
     return $null
 }
 
@@ -501,8 +569,8 @@ function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
                 return
             }       
             $parameterFile = GetParameterFile $path
+            Write-Host "test 33"
             $result = SmartDeployment $fullDeploymentFlag $remoteShaTable $path $parameterFile $templateObject
-            Write-Host "[Info] Try to deploy $parameterFile"
             if ($result.isSuccess -eq $false) {
                 $totalFailed++
             }
