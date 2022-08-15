@@ -24,10 +24,7 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-$global:parameterFileMapping = @{
-    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
-    $ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
-}
+
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
 
@@ -111,6 +108,11 @@ $metadataFilePath = "metadata.json"
     ]
 }
 "@ | Out-File -FilePath $metadataFilePath 
+
+$global:parameterFileMapping = @{
+    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    $ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
+}
 
 $resourceTypes = $contentTypes.Split(",") | ForEach-Object { $contentTypeMapping[$_] } | ForEach-Object { $_.ToLower() }
 $MaxRetries = 3
