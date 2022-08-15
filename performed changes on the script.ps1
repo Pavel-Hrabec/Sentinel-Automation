@@ -27,7 +27,7 @@ $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
 $global:parameterFileMapping = @{
     'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
-    'AnalyticsRules/Audit log data deletion.jsond' = $ParametersFilePath
+    'AnalyticsRules/Audit log data deletion2.json' = $ParametersFilePath
 }
 
 

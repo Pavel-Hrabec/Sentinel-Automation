@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "parentResourceId": {
+            "type": "string"
+        },
+        "kind": {
+            "type": "string"
+        },
+        "sourceControlId": {
+            "type": "string"
+        },
+        "workspace": {
+            "type": "string"
+        },
+        "contentId": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "metadataName": "[concat(toLower(parameters('kind')), '-', parameters('contentId'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('metadataName'))]",
+            "properties": {
+                "parentId": "[parameters('parentResourceId')]",
+                "kind": "[parameters('kind')]",
+                "source": {
+                    "kind": "SourceRepository",
+                    "name": "Repositories",
+                    "sourceId": "[parameters('sourceControlId')]"
+                }
+            }
+        }
+    ]
+}

@@ -110,8 +110,8 @@ $metadataFilePath = "metadata.json"
 "@ | Out-File -FilePath $metadataFilePath 
 
 $global:parameterFileMapping = @{
-    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
-    $ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
+    #'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
 }
 
 $resourceTypes = $contentTypes.Split(",") | ForEach-Object { $contentTypeMapping[$_] } | ForEach-Object { $_.ToLower() }
