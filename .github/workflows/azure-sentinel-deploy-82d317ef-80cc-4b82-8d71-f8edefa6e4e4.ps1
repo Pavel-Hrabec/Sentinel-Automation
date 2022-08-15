@@ -24,7 +24,10 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-$global:parameterFileMapping = @{}
+$global:parameterFileMapping = @{
+    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    $ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
+}
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
 
@@ -42,6 +45,28 @@ $sentinelResourcePatterns = @{
 if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
+
+$ParametersFilePath = "parameters.json"
+@"
+{
+    "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "string",
+            "value": "sentinelautomation"
+        },
+        "resourceGroupName": {
+            "type": "string",
+            "value": "sentinelautomaton"
+        },
+        "name": {
+            "type": "string",
+            "value": "D365 - Audit log data deletion"
+        }
+    }
+}
+"@ | Out-File -FilePath $ParametersFilePath
 
 $metadataFilePath = "metadata.json"
 @"
@@ -291,9 +316,13 @@ function IsValidTemplate($path, $templateObject) {
     Try {
         if (DoesContainWorkspaceParam $templateObject) {
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
+            Write-Host "**************"
+            Write-Host "IsValidTemplate() DoesContainWorkspaceParam"
         }
         else {
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
+            Write-Host "**************"
+            Write-Host "IsValidTemplate() else"
         }
 
         return $true
@@ -331,6 +360,8 @@ function IsValidResourceType($template) {
 
 function DoesContainWorkspaceParam($templateObject) {
     $templateObject.parameters.PSobject.Properties.Name -contains "workspace"
+    Write-Host "**************"
+    Write-Host "DoesContainWorkspaceParam() templateObject: $templateObject"
 }
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
@@ -351,20 +382,24 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
+                    Write-Host "AttemptDeployment 1"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "AttemptDeployment 2"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
+                    Write-Host "AttemptDeployment 3"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
+                    Write-Host "AttemptDeployment 4"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
                 }
             }
@@ -409,8 +444,9 @@ function LoadDeploymentConfig() {
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
     try {
-        if (Test-Path $configPath) {
+        if (Test-Path $configPath) { # Determines whether all elements of the path exists, returns $True if they do
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
+            Write-Host "LoadDeploymentConfig() deployment_config: $deployment_config"
             $parameterFileMappings = @{}
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
@@ -452,9 +488,21 @@ function AbsolutePathWithSlash($relativePath) {
 #resolve parameter file name, return $null if there is none.
 function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
+    Write-Host "GetParameterFile() index: $index"
     $key = ($global:parameterFileMapping.Keys | ? { $_ -eq $index })
+    Write-Host "**************"
+    Write-Host "GetParameterFile() key: $key"
+    Write-Host "**************"
+    Write-Host $global:parameterFileMapping.Keys
+    Write-Host "**************"
+    Write-Host "GetParameterFile() This is path `$_: $_"
+    Write-Host "**************"
+    Write-Host "**************"
+
     if ($key) {
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
+        Write-Host "GetParameterFile() mappedParameterFile: $mappedParameterFile"
+
         if (Test-Path $mappedParameterFile) {
             return $mappedParameterFile
         }
@@ -463,11 +511,15 @@ function GetParameterFile($path) {
     $parameterFilePrefix = $path.TrimEnd(".json")
     
     $workspaceParameterFile = $parameterFilePrefix + ".parameters-$WorkspaceId.json"
+    Write-Host "**************"
+    Write-Host "GetParameterFile() workspaceParameterFile: $workspaceParameterFile"
     if (Test-Path $workspaceParameterFile) {
         return $workspaceParameterFile
     }
     
     $defaultParameterFile = $parameterFilePrefix + ".parameters.json"
+    Write-Host "**************"
+    Write-Host "GetParameterFile() defaultParameterFile: $defaultParameterFile"
     if (Test-Path $defaultParameterFile) {
         return $defaultParameterFile
     }
