@@ -43,7 +43,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-$ParametersFilePath = "parameters.json"
+$AuditDataParam = "AuditDataParam.json"
 @"
 {
     "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -63,7 +63,29 @@ $ParametersFilePath = "parameters.json"
         }
     }
 }
-"@ | Out-File -FilePath $ParametersFilePath
+"@ | Out-File -FilePath $AuditDataParam
+
+$MFARejectedParam = "MFARejectedParam.json"
+@"
+{
+    "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "string",
+            "value": "sentinelautomation"
+        },
+        "resourceGroupName": {
+            "type": "string",
+            "value": "sentinelautomaton"
+        },
+        "name": {
+            "type": "string",
+            "value": "D365 - Audit log data deletion"
+        }
+    }
+}
+"@ | Out-File -FilePath $MFARejectedParam
 
 $metadataFilePath = "metadata.json"
 @"
@@ -111,6 +133,7 @@ $metadataFilePath = "metadata.json"
 
 $global:parameterFileMapping = @{
     'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
     #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
 }
 
@@ -442,7 +465,11 @@ function GenerateDeploymentName() {
 #Load deployment configuration
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
-    $global:parameterFileMapping = @{}
+    $global:parameterFileMapping = @{
+        'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+        'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
+        #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
+    }
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
     try {
@@ -498,6 +525,9 @@ function GetParameterFile($path) {
     Write-Host $global:parameterFileMapping.Keys
     Write-Host "**************"
     Write-Host "GetParameterFile() This is path `$_: $_"
+    Write-Host "**************"
+    Write-Host "**************"
+    Write-Host $global:parameterFileMapping.Key
     Write-Host "**************"
     Write-Host "**************"
 
