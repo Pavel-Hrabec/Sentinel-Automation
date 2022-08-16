@@ -110,7 +110,7 @@ $metadataFilePath = "metadata.json"
 "@ | Out-File -FilePath $metadataFilePath 
 
 $global:parameterFileMapping = @{
-    #'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
     #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
 }
 
