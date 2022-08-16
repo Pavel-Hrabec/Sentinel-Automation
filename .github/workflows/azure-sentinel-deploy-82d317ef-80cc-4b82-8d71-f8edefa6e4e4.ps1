@@ -74,14 +74,6 @@ $MFARejectedParam = "MFARejectedParam.json"
         "workspace": {
             "type": "string",
             "value": "sentinelautomation"
-        },
-        "resourceGroupName": {
-            "type": "string",
-            "value": "sentinelautomaton"
-        },
-        "name": {
-            "type": "string",
-            "value": "D365 - Audit log data deletion"
         }
     }
 }
@@ -132,7 +124,7 @@ $metadataFilePath = "metadata.json"
 "@ | Out-File -FilePath $metadataFilePath 
 
 $global:parameterFileMapping = @{
-    'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+    'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
     'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
     #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
 }
@@ -384,9 +376,8 @@ function IsValidResourceType($template) {
 }
 
 function DoesContainWorkspaceParam($templateObject) {
-    $templateObject.parameters.PSobject.Properties.Name -contains "workspace"
-    Write-Host "**************"
-    Write-Host "DoesContainWorkspaceParam() templateObject: $templateObject"
+    $templateObject.parameters.PSobject.Properties.Name -contains "workspace" 
+    #Will look inside your defined template (for example Audit log data deletion) and if there is workspace param it returns True
 }
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
