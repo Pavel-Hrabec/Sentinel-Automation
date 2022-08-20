@@ -44,6 +44,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
 }
 
 $AuditDataName = "D365 - Audit log data deletion"
+$AuditDataName = $Env:auditdataname
 
 $AuditDataParam = "AuditDataParam.json"
 @"
@@ -53,15 +54,15 @@ $AuditDataParam = "AuditDataParam.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value": $Env:workspaceName
+            "value": "$Env:workspaceName"
         },
         "resourceGroupName": {
             "type": "string",
-            "value": $Env:resourceGroupName
+            "value": "$Env:resourceGroupName"
         },
         "name": {
             "type": "string",
-            "value": $Env:workspaceName
+            "value": "$Env:auditdataname"
         }
     }
 }
