@@ -73,7 +73,7 @@ $MFARejectedParam = "MFARejectedParam.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value": "Sentinel"
+            "value": "sentinelautomaton"
         }
     }
 }
@@ -347,7 +347,7 @@ function IsValidTemplate($path, $templateObject, $parameterFile) {
         {
             if ($parameterFile) {
                 Write-Host "DoesContainWorkspaceParam 1"
-                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile 
+                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -workspace $WorkspaceName 
             }
             else 
             {
@@ -548,6 +548,8 @@ function GetParameterFile($path) {
     Write-Host "**************"
 
     if ($key) {
+        Write-Host $key
+        Write-Host "**************"
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
         Write-Host "GetParameterFile() mappedParameterFile: $mappedParameterFile"
 
