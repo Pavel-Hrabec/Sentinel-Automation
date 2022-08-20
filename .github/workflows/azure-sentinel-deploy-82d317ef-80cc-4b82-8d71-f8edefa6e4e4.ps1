@@ -329,10 +329,11 @@ function ToContentKind($contentKinds, $resource, $templateObject) {
     return $null
 }
 
-function IsValidTemplate($path, $templateObject) {
+function IsValidTemplate($path, $templateObject, $parameterFile) {
     Try {
+        <#
         if (DoesContainWorkspaceParam $templateObject) {
-            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile
             Write-Host "**************"
             Write-Host "IsValidTemplate() DoesContainWorkspaceParam"
         }
@@ -341,7 +342,27 @@ function IsValidTemplate($path, $templateObject) {
             Write-Host "**************"
             Write-Host "IsValidTemplate() else"
         }
-
+        #>
+        if (DoesContainWorkspaceParam $templateObject) 
+        {
+            if ($parameterFile) {
+                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile
+            }
+            else 
+            {
+                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName 
+            }
+        }
+        else 
+        {
+            if ($parameterFile) {
+                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile
+            }
+            else 
+            {
+                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
+            }
+        }
         return $true
     }
     Catch {
@@ -383,7 +404,7 @@ function DoesContainWorkspaceParam($templateObject) {
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
     Write-Host "[Info] Deploying $path with deployment name $deploymentName"
 
-    $isValid = IsValidTemplate $path $templateObject
+    $isValid = IsValidTemplate $path $templateObject $parameterFile
     if (-not $isValid) {
         return $false
     }
