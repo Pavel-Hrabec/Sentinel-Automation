@@ -482,7 +482,7 @@ function GenerateDeploymentName() {
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
     $global:parameterFileMapping = @{
-        'AnalyticsRules/Audit log data deletion.json' = $ParametersFilePath
+        'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
         'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
         #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
     }
