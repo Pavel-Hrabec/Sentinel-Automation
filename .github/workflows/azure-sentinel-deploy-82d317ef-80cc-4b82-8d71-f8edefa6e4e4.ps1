@@ -73,7 +73,7 @@ $MFARejectedParam = "MFARejectedParam.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value": "sentinelautomation"
+            "value": "Sentinel"
         }
     }
 }
@@ -346,20 +346,24 @@ function IsValidTemplate($path, $templateObject, $parameterFile) {
         if (DoesContainWorkspaceParam $templateObject) 
         {
             if ($parameterFile) {
-                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile
+                Write-Host "DoesContainWorkspaceParam 1"
+                Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile 
             }
             else 
             {
+                Write-Host "DoesContainWorkspaceParam 2"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName 
             }
         }
         else 
         {
             if ($parameterFile) {
+                Write-Host "DoesContainWorkspaceParam 3"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile
             }
             else 
             {
+                Write-Host "DoesContainWorkspaceParam 4"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
             }
         }
@@ -403,7 +407,7 @@ function DoesContainWorkspaceParam($templateObject) {
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
     Write-Host "[Info] Deploying $path with deployment name $deploymentName"
-
+    Write-Host "This is parameter file before checking valid template: $parameterFile"
     $isValid = IsValidTemplate $path $templateObject $parameterFile
     if (-not $isValid) {
         return $false
