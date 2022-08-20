@@ -43,7 +43,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-#$AuditDataName = "D365 - Audit log data deletion"
+$AuditDataName = "D365 - Audit log data deletion"
 
 $AuditDataParam = "AuditDataParam.json"
 @"
@@ -53,19 +53,19 @@ $AuditDataParam = "AuditDataParam.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value": $($env:workspace)
+            "value": $workspace
         },
         "resourceGroupName": {
             "type": "string",
-            "value": $($Env:resourceGroupName)
+            "value": $ResourceGroupName
         },
         "name": {
             "type": "string",
-            "value": $($env:workspace)
+            "value": $AuditDataName
         }
     }
 }
-"@ | Out-File -FilePath $AuditDataParam
+"@ | Out-File -FilePath $AuditDataParam -workspace $workspace -AuditDataName $AuditDataName -ResourceGroupName $ResourceGroupName
 
 $MFARejectedParam = "MFARejectedParam.json"
 @"
