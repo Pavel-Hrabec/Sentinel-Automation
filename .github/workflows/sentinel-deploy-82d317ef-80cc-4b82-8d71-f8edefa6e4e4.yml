@@ -33,6 +33,7 @@ jobs:
       rootDirectory: '${{ github.workspace }}'
       githubAuthToken: ${{ secrets.GITHUB_TOKEN }}
       smartDeployment: 'true'
+      workspaceKey: ${{ secrets.LOGANALYTICSWORKSPACEKEY }}
 
     steps:
     - name: Login to Azure (Attempt 1)

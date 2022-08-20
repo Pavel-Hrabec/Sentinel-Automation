@@ -22,6 +22,12 @@
         "PlaybookName": {
             "defaultValue": "DataIngestionRepo",
             "type": "string"
+        },
+        "WorkspaceID": {
+            "type": "string"
+        },
+        "WorkspaceKey": {
+            "type": "string"
         }
     },
     "variables": {
@@ -168,7 +174,10 @@
             "kind": "V1",
             "properties": {
                 "displayName": "[variables('AzureloganalyticsdatacollectorConnectionName')]",
-                "customParameterValues": {},
+                "parameterValues": {
+                    "username": "[parameters('WorkspaceID')]",
+                    "password": "[parameters('WorkspaceKey')]"
+                },
                 "api": {
                     "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azureloganalyticsdatacollector')]"
                 }

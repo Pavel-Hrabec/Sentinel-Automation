@@ -6,6 +6,7 @@ $WorkspaceId = $Env:workspaceId
 $Directory = $Env:directory
 $Creds = $Env:creds
 $contentTypes = $Env:contentTypes
+$WorkspaceKey = $Env:workspaceKey
 $contentTypeMapping = @{
     "AnalyticsRule"=@("Microsoft.OperationalInsights/workspaces/providers/alertRules", "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions");
     "AutomationRule"=@("Microsoft.OperationalInsights/workspaces/providers/automationRules");
@@ -43,9 +44,6 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-$AuditDataName = "D365 - Audit log data deletion"
-$AuditDataName = $Env:auditdataname
-
 $AuditDataParam = "AuditDataParam.json"
 @"
 {
@@ -62,11 +60,29 @@ $AuditDataParam = "AuditDataParam.json"
         },
         "name": {
             "type": "string",
-            "value": "$Env:auditdataname"
+            "value": "D365 - Audit log data deletion"
         }
     }
 }
 "@ | Out-File -FilePath $AuditDataParam 
+
+$DataIngestionRepoParam = "DataIngestionRepoParam.json"
+@"
+{
+    "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "WorkspaceID": {
+            "type": "string",
+            "value": "$Env:workspaceId"
+        },
+        "WorkspaceKey": {
+            "type": "string",
+            "value": "$Env:workspaceKey"
+        }
+    }
+}
+"@ | Out-File -FilePath $DataIngestionRepoParam
 
 $MFARejectedParam = "MFARejectedParam.json"
 @"
@@ -481,6 +497,7 @@ function LoadDeploymentConfig() {
     $global:parameterFileMapping = @{
         'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
         'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
+        "Playbooks/DataIngestionRepo.json" = $DataIngestionRepoParam
         #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
     }
     $global:prioritizedContentFiles = @()
