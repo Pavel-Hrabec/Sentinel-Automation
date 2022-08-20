@@ -124,8 +124,8 @@ $metadataFilePath = "metadata.json"
 "@ | Out-File -FilePath $metadataFilePath 
 
 $global:parameterFileMapping = @{
-    'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
-    'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
+    #'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
+    #'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
     #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
 }
 
