@@ -53,19 +53,19 @@ $AuditDataParam = "AuditDataParam.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value": $workspace
+            "value": $Env:workspaceName
         },
         "resourceGroupName": {
             "type": "string",
-            "value": $ResourceGroupName
+            "value": $Env:resourceGroupName
         },
         "name": {
             "type": "string",
-            "value": $AuditDataName
+            "value": $Env:workspaceName
         }
     }
 }
-"@ | Out-File -FilePath $AuditDataParam -workspace $workspace -AuditDataName $AuditDataName -ResourceGroupName $ResourceGroupName
+"@ | Out-File -FilePath $AuditDataParam 
 
 $MFARejectedParam = "MFARejectedParam.json"
 @"
