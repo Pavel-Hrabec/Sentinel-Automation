@@ -24,7 +24,7 @@ $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
-
+$global:parameterFileMapping = @{}
 $global:prioritizedContentFiles = @()
 $global:excludeContentFiles = @()
 
@@ -43,7 +43,7 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-$AuditDataName = "D365 - Audit log data deletion"
+#$AuditDataName = "D365 - Audit log data deletion"
 
 $AuditDataParam = "AuditDataParam.json"
 @"
@@ -53,15 +53,15 @@ $AuditDataParam = "AuditDataParam.json"
     "parameters": {
         "workspace": {
             "type": "string",
-            "value": $workspace
+            "value": $($env:workspace)
         },
         "resourceGroupName": {
             "type": "string",
-            "value": $ResourceGroupName
+            "value": $($Env:resourceGroupName)
         },
         "name": {
             "type": "string",
-            "value": $AuditDataName
+            "value": $($env:workspace)
         }
     }
 }
@@ -124,12 +124,6 @@ $metadataFilePath = "metadata.json"
     ]
 }
 "@ | Out-File -FilePath $metadataFilePath 
-
-$global:parameterFileMapping = @{
-    #'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
-    #'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
-    #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
-}
 
 $resourceTypes = $contentTypes.Split(",") | ForEach-Object { $contentTypeMapping[$_] } | ForEach-Object { $_.ToLower() }
 $MaxRetries = 3
@@ -402,9 +396,9 @@ function IsValidResourceType($template) {
     return $isAllowedResources
 }
 
+#Will look inside your defined template (for example Audit log data deletion) and if there is workspace param it returns True
 function DoesContainWorkspaceParam($templateObject) {
     $templateObject.parameters.PSobject.Properties.Name -contains "workspace" 
-    #Will look inside your defined template (for example Audit log data deletion) and if there is workspace param it returns True
 }
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
