@@ -11,25 +11,28 @@
         },
         "displayname": {
             "type": "string",
-            "defaultValue": "test1",
+            "defaultValue": "RepositoryHuntingQuery",
             "metadata": {
                 "description": "Name for your hunting query"
             }
         },
         "query": {
             "type": "string",
+            "defaultValue": "SecureScoreControls\r\n| where _ResourceId has \"test\"\n| extend URL_0_Url = ControlId",            
             "metadata": {
                 "description": "Type your query here (e.g. SigninLogs | take 10)"
             }
         },
         "tactics": {
-            "type": "String",
+            "type": "string",
+            "defaultValue": "CredentialAccess,InitialAccess",
             "metadata": {
                 "description": "MITRE ATT&CK tactics. Allowed value is a comma separated subset of the following values: DefenseEvasion, Impact, CommandAndControl, Collection, LateralMovement, PreAttack, Exfiltration, Discovery, CredentialAccess, PrivilegeEscalation, Persistence, Execution, InitialAccess"
             }
         },
         "techniques": {
             "type": "string",
+            "defaultValue": "T1110,T1091",
             "metadata": {
                 "description": "MITRE ATT&CK techniques and sub-techniques. Allows value is a comma separated string of all applicable techniques and sub-techniques (e.g. 'T1547,T1547.001')"
             }
@@ -50,7 +53,7 @@
                 "Tags": [
                     {
                         "Name": "description",
-                        "Value": "Demo"
+                        "Value": "Used as test query from Repository"
                     },
                     {
                         "Name": "tactics",
