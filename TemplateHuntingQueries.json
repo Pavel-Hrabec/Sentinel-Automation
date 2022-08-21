@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        },
+        "query_id": {
+            "defaultValue": "[newGuid()]",
+            "type": "String"
+        },
+        "displayname": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Name for your hunting query"
+            }
+        },
+        "query": {
+            "type": "string",
+            "defaultValue": "",            
+            "metadata": {
+                "description": "Type your query here (e.g. SigninLogs | take 10)"
+            }
+        },
+        "description": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Description for you hunting query"
+            }
+        },
+        "techniques": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "MITRE ATT&CK techniques and sub-techniques. Allows value is a comma separated string of all applicable techniques and sub-techniques (e.g. 'T1547,T1547.001')"
+            }
+        },
+        "tactics": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "MITRE ATT&CK tactics. Allowed value is a comma separated subset of the following values: DefenseEvasion, Impact, CommandAndControl, Collection, LateralMovement, PreAttack, Exfiltration, Discovery, CredentialAccess, PrivilegeEscalation, Persistence, Execution, InitialAccess"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspace'), '/',parameters('query_id'))]",
+            "properties": {
+                "etag": "*",
+                "Category": "Hunting Queries",
+                "DisplayName": "[parameters('displayname')]", 
+                "Query": "[parameters('query')]",
+                "Tags": [
+                    {
+                        "Name": "description",
+                        "Value": "[parameters('description')]"
+                    },
+                    {
+                        "Name": "tactics",
+                        "Value": "[parameters('tactics')]"
+                    },
+                    {
+                        "Name": "techniques", 
+                        "Value": "[parameters('techniques')]"
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {}
+}
