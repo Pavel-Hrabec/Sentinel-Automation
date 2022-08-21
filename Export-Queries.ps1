@@ -12,4 +12,4 @@ param (
 
 $Categories = ("Hunting Queries")
 
-(Get-AzOperationalInsightsSavedSearch -ResourceGroupName $ResourceGroupName -WorkspaceName $WorkSpaceName).Value.Properties | Where-Object { $Categories -contains $_.Category } |ConvertTo-Json -depth 100
+(Get-AzOperationalInsightsSavedSearch -ResourceGroupName $ResourceGroupName -WorkspaceName $WorkSpaceName).Value.Properties | Where-Object { $Categories -contains $_.Category } | ConvertTo-Json -depth 100
