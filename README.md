@@ -138,30 +138,30 @@
 - Changes are required for the following parameters: displayname, query, description, techniques, tactics
     
     ```json
-    "displayname": {
-        "type": "string",
-        "defaultValue": "",
-        }
-    },
-    "query": {
-        "type": "string",
-        "defaultValue": ""         
-    },
-    "description": {
-        "type": "string",
-        "defaultValue": ""
-        }
-    },
-    "techniques": {
-        "type": "string",
-        "defaultValue": ""
-        }
-    },
-    "tactics": {
-        "type": "string",
-        "defaultValue": ""
-        }
+"displayname": {
+    "type": "string",
+    "defaultValue": "",
     }
+},
+"query": {
+    "type": "string",
+    "defaultValue": ""
+},
+"description": {
+    "type": "string",
+    "defaultValue": ""
+    }
+},
+"techniques": {
+    "type": "string",
+    "defaultValue": ""
+    }
+},
+"tactics": {
+    "type": "string",
+    "defaultValue": ""
+    }
+}
     ```
     
 
