@@ -1,6 +1,14 @@
 # Sentinel GitHub Connection
 
-- 
+- To deploy custom content from your GitHub or Azure DevOps repository follow steps from [official Microsoft article](https://docs.microsoft.com/en-us/azure/sentinel/ci-cd?tabs=github)
+- All resources needs to be defined as Azure Resource Management (AMR) template in json file format
+- Version of ARM template
+    
+    ```json
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+    ```
+    
+- Microsoft Sentinel includes many components. Many of them will work out of the box, however some of them needs to be adjusted if you are looking for scalable solution with multiple workspaces and connections
 - Order of resource deployment
     1. Analytics rules
     2. Automation rules
@@ -8,14 +16,10 @@
     4. Playbooks
     5. Workbooks
 
-# Content management for Sentinel
-
-- Microsoft Sentinel includes many components. Many of them will work out of the box, however some of them needs to be adjusted if you are looking for scalable solution
-
 ## Analytics rules
 
 - Don’t need any adjustments and can be easily exported from Azure portal
-- Navigate to your Sentinel workspace, select “Analytics” and chose “Export” to download analytics rules locally
+- Navigate to your Sentinel workspace, select “Analytics” and “Export” option allows to download analytics rules
 
 ## Automation Rules
 
@@ -43,7 +47,7 @@
         ```
         
 - [Download Powershell script created by garybushey](https://github.com/garybushey/MicrosoftSentinelAutomation)
-- Run script with your parameters, more in his article [how to export automation rules](https://www.garybushey.com/2022/05/08/get-or-export-microsoft-sentinel-automation-rules/)
+- Run script with your parameters, more in his article [how to export automation rules](https://garybushey.com/?p=559)
     
     ```powershell
     .\Export-AzSentinelAutomationRule.ps1 -WorkSpaceName "xxxyyyzzz" -ResourceGroupName "xxxyyyzzz"
@@ -95,9 +99,7 @@
         "displayName": "[parameters('automationRuleName')]",
         "ChangeFromHere": 3,
     ```
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/49d67ec4-1b1c-44be-8131-6c36938f353b/Untitled.png)
-    
+        
 - Edit “default value” for parameter “automationRuleName”, line 16
     
     ```json
@@ -178,7 +180,8 @@
 ### Playbooks with API Connections
 
 - To deploy Playbooks & API with ARM template [article by Sacha Bruttin explains steps](https://www.bruttin.com/2017/06/13/deploy-logic-app-with-arm.html)
-- You will have to edit ARM template with parameters based on your specific deployment. In my case I’ve connected playbook to log analytics workspace
+- You will have to
+- edit ARM template with parameters based on your specific deployment. In my case I’ve connected playbook to log analytics workspace
 - Parameters depend on API connection type. To retrieve required parameters from you dev environment [use tool ARMClient created by ProjectKudu](https://github.com/projectkudu/ARMClient)
     - Install ArmClient with Chocolatey
         
@@ -332,7 +335,7 @@
     },
     ```
     
-- Variables section for “fallbackResourceIDs and resources section for sourceId needs to be edited.
+    - Variables section for “fallbackResourceIDs and resources section for sourceId needs to be edited.
     
     ```json
     "fallbackResourceIds": [
@@ -344,9 +347,6 @@
     
 - After you import your workbooks and you want to see them in “My workbooks” tab you will have to initially save them
     - Navigate to Microsoft Sentinel > Workbooks > Add workbook > Open > Select your workbook > Save
-    - [I could use single user managed identity for connection to sentinel](https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/what-s-new-managed-identity-for-azure-sentinel-logic-apps/ba-p/2068204)
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/04d5081e-d6bf-4ab4-831a-43515b140597/Untitled.png)
 
 # How to pass custom parameters from Pipeline
 
@@ -360,8 +360,6 @@
 - First of all environment variable needs to be added to Github actions
     - Navigate to your repository, go to “Settings”. Under Security section select “Secrets” and “Actions”
     - Here you can extend your secrets with “New repository secret” option - pick name and secret
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0cecf8a6-1fc0-429a-8d02-3cf1f15aec65/Untitled.png)
     
 - Extend your pipeline with the new variable, edit sentinel-deploy-xxxyyyzzz.yml
     
