@@ -1,106 +1,23 @@
-# Sentinel Automation
-
-Sources:
-
-[https://github.com/Azure/Azure-Sentinel/wiki#test-your-contribution](https://github.com/Azure/Azure-Sentinel/wiki#test-your-contribution)
-
-[https://github.com/Azure/Azure-Sentinel/tree/master/Solutions#guide-to-building-microsoft-sentinel-solutions](https://github.com/Azure/Azure-Sentinel/tree/master/Solutions#guide-to-building-microsoft-sentinel-solutions)
-
-[https://docs.microsoft.com/en-us/azure/sentinel/ci-cd?tabs=github](https://docs.microsoft.com/en-us/azure/sentinel/ci-cd?tabs=github)
-
-[Export Sentinel Playbooks](https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/export-microsoft-sentinel-playbooks-or-azure-logic-apps-with/ba-p/3275898)
-
-[Export Sentinel Automation Rules](https://www.garybushey.com/2022/05/08/get-or-export-microsoft-sentinel-automation-rules/)
-
-[https://github.com/javiersoriano/sentinelascode](https://github.com/javiersoriano/sentinelascode)
-
-https://github.com/javiersoriano/sentinel-scripts
-
-- format needs to be in ARM template. You can’t import as gallery view in workbook format
-
-workspaceParameterFile
-parameterFileMapping
-
-function GetParameterFile($path) { // this creates parameter file
-
-```
-Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName // cannot be changed
-
-```
-
-- [https://youtu.be/3IRwtbGlshk](https://youtu.be/3IRwtbGlshk) > > > Logics apps might need to be build separately to create/store secrets for connections and use those as parameters/variables for deployment
-
 # Sentinel GitHub Connection
 
+- 
 - Order of resource deployment
     1. Analytics rules
     2. Automation rules
     3. Hunting queries
-    4. Parsers
-    5. Playbooks
-    6. Workbooks
+    4. Playbooks
+    5. Workbooks
 
-## How to export resources from Sentinel
+# Content management for Sentinel
 
-### Workbooks
+- Microsoft Sentinel includes many components. Many of them will work out of the box, however some of them needs to be adjusted if you are looking for scalable solution
 
-- View workbook > Edit > Advanced Editor > ARM template
-- File needs to be in json format
-- Edit your workbook
-    - Remove parameter workbookSourceID
-        
-        ```json
-        "workbookSourceId": {
-          "type": "string",
-          "defaultValue": "/subscriptions/xxxyyyzzz/resourcegroups/xxxyyyzzz/providers/microsoft.operationalinsights/workspaces/xxxyyyzzz",
-          "metadata": {
-            "description": "The id of resource instance to which the workbook will be associated"
-          }
-        },
-        ```
-        
-    - Parameters section needs to be extended - add parameters workspace, resourceGroupName and subscription ID
-    
-    ```json
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "Name of the resource group where the workbook will be saved"
-      }
-    },
-    "subscriptionID": {
-      "type": "string",
-      "defaultValue": "[subscription().id]",
-      "metadata": {
-        "description": "Unique subscription ID for tenant where the workbook will be saved"
-      }
-    },
-    "workspace": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of the workspace name where workbook will be saved"
-      }
-    },
-    ```
-    
-- Variables section for “fallbackResourceIDs and resources section for sourceId needs to be edited.
-    
-    ```json
-    "fallbackResourceIds": [
-      "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
-    ],
-    
-    "sourceId": "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
-    ```
-    
-- After you import your workbooks and you want to see them in “My workbooks” tab you will have to initially save them
-    - Navigate to Microsoft Sentinel > Workbooks > Add workbook > Open > Select your workbook > Save
-    - [I could use single user managed identity for connection to sentinel](https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/what-s-new-managed-identity-for-azure-sentinel-logic-apps/ba-p/2068204)
+## Analytics rules
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/04d5081e-d6bf-4ab4-831a-43515b140597/Untitled.png)
+- Don’t need any adjustments and can be easily exported from Azure portal
+- Navigate to your Sentinel workspace, select “Analytics” and chose “Export” to download analytics rules locally
 
-### Automation Rules
+## Automation Rules
 
 - Requirements
     - [PowerShell 6.2 or later](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2#installing-the-msi-package)
@@ -171,7 +88,7 @@ Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFi
     }
     ```
     
-- Edit template with your exported code. Everything starting under “displayName” needs to be changed, line 29
+- Edit template with your exported code. Everything starting under “displayName” needs to be changed (line 29)
     
     ```json
     "properties": {
@@ -188,7 +105,65 @@ Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFi
     ```
     
 
-### Playbooks
+## Hunting queries
+
+- You will have to structure your ARM template with parameters specific to your query
+- To get your hunting query you can use [powershell script available in repository](https://github.com/Pavel-Hrabec/Sentinel-Automation/blob/main/Export-Queries.ps1)
+    - Run script for your environment
+    
+    ```powershell
+    .\Export-Queries.ps1 -WorkspaceName "xxxyyyzzz" -ResourceGroupName "xxxyyyzzz"
+    ```
+    
+    - You will get similar output to this
+    
+    ```json
+    {
+        "Category": "Hunting Queries",
+        "DisplayName": "RepositoryHuntingQuery",
+        "Query": "SecureScoreControls\r\n| where _ResourceId has \"test\"\n| extend URL_0_Url = ControlId",
+        "Version": 2,
+        "Tags": {
+          "createdBy": "Pavel Hrabec",
+          "tactics": "CredentialAccess,InitialAccess",
+          "createdTimeUtc": "08/21/2022 03:51:32",
+          "description": "Used as test Query for export",
+          "techniques": "T1110,T1091"
+        }
+    ```
+    
+- Download [ARM template for hunting queries](https://docs.microsoft.com/en-us/azure/templates/microsoft.operationalinsights/workspaces/savedsearches?pivots=deployment-language-arm-template#resource-format-1) or you can get [template from GitHub](https://github.com/Pavel-Hrabec/Sentinel-Automation/blob/main/TemplateHuntingQueries.json)
+- Changes are required for the following parameters: displayname, query, description, techniques, tactics
+    
+    ```json
+    "displayname": {
+        "type": "string",
+        "defaultValue": "",
+        }
+    },
+    "query": {
+        "type": "string",
+        "defaultValue": ""         
+    },
+    "description": {
+        "type": "string",
+        "defaultValue": ""
+        }
+    },
+    "techniques": {
+        "type": "string",
+        "defaultValue": ""
+        }
+    },
+    "tactics": {
+        "type": "string",
+        "defaultValue": ""
+        }
+    }
+    ```
+    
+
+## Playbooks
 
 - Template schema version: 2019-04-01 is required
 - Download Azure Logic App/Playbook ARM Template Generator tool from [Azure Sentinel GitHub repository](https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator)
@@ -314,17 +289,73 @@ Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFi
     }
     ```
     
-    - 
-- 
 
-## How to pass custom parameters from Pipeline
+## Workbooks
+
+- Format needs to be in ARM template. You can’t import from gallery view in workbook format
+- In azure portal navigate to your Sentinel workspace and under Threat Management category select “Workbooks”. In “My workbooks” section pick  your desired workbook for export and select “View save workbook”. From here select “edit” and  “advanced editor” option will be available, which allows to download ARM template.
+- Edit your workbook
+    - Remove parameter workbookSourceID
+        
+        ```json
+        "workbookSourceId": {
+          "type": "string",
+          "defaultValue": "/subscriptions/xxxyyyzzz/resourcegroups/xxxyyyzzz/providers/microsoft.operationalinsights/workspaces/xxxyyyzzz",
+          "metadata": {
+            "description": "The id of resource instance to which the workbook will be associated"
+          }
+        },
+        ```
+        
+    - Parameters section needs to be extended - add parameters workspace, resourceGroupName and subscription ID
+    
+    ```json
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Name of the resource group where the workbook will be saved"
+      }
+    },
+    "subscriptionID": {
+      "type": "string",
+      "defaultValue": "[subscription().id]",
+      "metadata": {
+        "description": "Unique subscription ID for tenant where the workbook will be saved"
+      }
+    },
+    "workspace": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the workspace name where workbook will be saved"
+      }
+    },
+    ```
+    
+- Variables section for “fallbackResourceIDs and resources section for sourceId needs to be edited.
+    
+    ```json
+    "fallbackResourceIds": [
+      "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]"
+    ],
+    
+    "sourceId": "[concat(parameters('subscriptionID'), '/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.operationalinsights/workspaces/', parameters('workspace'))]",
+    ```
+    
+- After you import your workbooks and you want to see them in “My workbooks” tab you will have to initially save them
+    - Navigate to Microsoft Sentinel > Workbooks > Add workbook > Open > Select your workbook > Save
+    - [I could use single user managed identity for connection to sentinel](https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/what-s-new-managed-identity-for-azure-sentinel-logic-apps/ba-p/2068204)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/04d5081e-d6bf-4ab4-831a-43515b140597/Untitled.png)
+
+# How to pass custom parameters from Pipeline
 
 - For this to work multiple steps are required.
     1. Parameters are added as environment variables in Pipeline 
     2. Parameter file with variables is created with deployment
     3. Parameter file is used for resource deployment 
 
-### Parameters are added as environment variables in Pipeline
+## Parameters are added as environment variables in Pipeline
 
 - First of all environment variable needs to be added to Github actions
     - Navigate to your repository, go to “Settings”. Under Security section select “Secrets” and “Actions”
@@ -343,7 +374,7 @@ Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFi
     ```
     
 
-### Parameter file with variables is created with deployment
+## Parameter file with variables is created with deployment
 
 - Create parameter.json file with your pipeline environment variable and assign path to this file as variable
     - [ARM template](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/variables#example-template) is used to specify paramater.json file with parameters (In this case workspaceId and workspaceKey)
@@ -368,7 +399,7 @@ $DataIngestionRepoParam = "DataIngestionRepoParam.json"
 "@ | Out-File -FilePath $DataIngestionRepoParam
 ```
 
-### Parameter file is used for resource deployment
+## Parameter file is used for resource deployment
 
 - Function LoadDeploymentConfig needs to be adjusted for parameter file mapping. Below is code before changes.
     
@@ -441,4 +472,3 @@ $DataIngestionRepoParam = "DataIngestionRepoParam.json"
     ```powershell
     [Info] Deploy D:\a\Sentinel-Automation\Sentinel-Automation\AnalyticsRules\Audit log data deletion.json with parameter file: [D:\a\Sentinel-Automation\Sentinel-Automation\AuditDataParam.json]
     ```
-    
