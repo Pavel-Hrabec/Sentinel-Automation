@@ -359,24 +359,20 @@ function IsValidTemplate($path, $templateObject, $parameterFile) {
         if (DoesContainWorkspaceParam $templateObject) 
         {
             if ($parameterFile) {
-                Write-Host "DoesContainWorkspaceParam 1"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -workspace $WorkspaceName 
             }
             else 
             {
-                Write-Host "DoesContainWorkspaceParam 2"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName 
             }
         }
         else 
         {
             if ($parameterFile) {
-                Write-Host "DoesContainWorkspaceParam 3"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile
             }
             else 
             {
-                Write-Host "DoesContainWorkspaceParam 4"
                 Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
             }
         }
@@ -497,8 +493,7 @@ function LoadDeploymentConfig() {
     $global:parameterFileMapping = @{
         'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
         'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
-        "Playbooks/DataIngestionRepo.json" = $DataIngestionRepoParam
-        #$ParametersFilePath = 'AnalyticsRules/Audit log data deletion2.json'
+        'Playbooks/DataIngestionRepo.json' = $DataIngestionRepoParam
     }
     $global:prioritizedContentFiles = @()
     $global:excludeContentFiles = @()
