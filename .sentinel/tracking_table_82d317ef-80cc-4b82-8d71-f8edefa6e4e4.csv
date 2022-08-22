@@ -10,6 +10,5 @@ Workbooks/Azure DDoS Protection Workbook - sentinelautomation.json,40730d15c06eb
 AnalyticsRules/Audit log data deletion.json,a4aa667bab459586d6f74b28d344a4aacfddb519
 DataIngestionRepoParam.json,
 Hunting Queries/huntingQuery.json,0fed8e81a3e097c5d8eaa1f0266adcb232cc1cf5
-Playbooks/DataIngestionRepo.json,1ba6160ebf83a04f3c23a78a4711e3e7634202b1
 Workbooks/Azure AD Sign-Ins.json,56ff06121e2170fd78f5f4aa99c266a812b62790
 TemplateHuntingQueries.json,6eb0951af5e2d51009d9d98a071a5efb2c894b33
