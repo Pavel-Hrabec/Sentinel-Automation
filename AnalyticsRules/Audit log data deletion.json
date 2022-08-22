@@ -4,12 +4,6 @@
     "parameters": {
         "workspace": {
             "type": "String"
-        },
-        "name": {
-            "type": "String"
-        },
-        "resourceGroupName": {
-            "type": "String"
         }
     },
     "resources": [

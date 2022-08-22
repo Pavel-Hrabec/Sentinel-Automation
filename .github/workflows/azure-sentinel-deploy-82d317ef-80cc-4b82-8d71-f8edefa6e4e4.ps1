@@ -44,28 +44,6 @@ if ([string]::IsNullOrEmpty($contentTypes)) {
     $contentTypes = "AnalyticsRule"
 }
 
-$AuditDataParam = "AuditDataParam.json"
-@"
-{
-    "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "workspace": {
-            "type": "string",
-            "value": "$Env:workspaceName"
-        },
-        "resourceGroupName": {
-            "type": "string",
-            "value": "$Env:resourceGroupName"
-        },
-        "name": {
-            "type": "string",
-            "value": "D365 - Audit log data deletion"
-        }
-    }
-}
-"@ | Out-File -FilePath $AuditDataParam 
-
 $DataIngestionRepoParam = "DataIngestionRepoParam.json"
 @"
 {
@@ -83,20 +61,6 @@ $DataIngestionRepoParam = "DataIngestionRepoParam.json"
     }
 }
 "@ | Out-File -FilePath $DataIngestionRepoParam
-
-$MFARejectedParam = "MFARejectedParam.json"
-@"
-{
-    "`$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "workspace": {
-            "type": "string",
-            "value": "sentinelautomaton"
-        }
-    }
-}
-"@ | Out-File -FilePath $MFARejectedParam
 
 $metadataFilePath = "metadata.json"
 @"
@@ -347,13 +311,9 @@ function IsValidTemplate($path, $templateObject, $parameterFile) {
         <#
         if (DoesContainWorkspaceParam $templateObject) {
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName -TemplateParameterFile $parameterFile
-            Write-Host "**************"
-            Write-Host "IsValidTemplate() DoesContainWorkspaceParam"
         }
         else {
             Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
-            Write-Host "**************"
-            Write-Host "IsValidTemplate() else"
         }
         #>
         if (DoesContainWorkspaceParam $templateObject) 
@@ -416,7 +376,6 @@ function DoesContainWorkspaceParam($templateObject) {
 
 function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObject) {
     Write-Host "[Info] Deploying $path with deployment name $deploymentName"
-    Write-Host "This is parameter file before checking valid template: $parameterFile"
     $isValid = IsValidTemplate $path $templateObject $parameterFile
     if (-not $isValid) {
         return $false
@@ -432,24 +391,20 @@ function AttemptDeployment($path, $parameterFile, $deploymentName, $templateObje
             if (DoesContainWorkspaceParam $templateObject) 
             {
                 if ($parameterFile) {
-                    Write-Host "AttemptDeployment 1"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
-                    Write-Host "AttemptDeployment 2"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
                 }
             }
             else 
             {
                 if ($parameterFile) {
-                    Write-Host "AttemptDeployment 3"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -TemplateParameterFile $parameterFile -ErrorAction Stop | Out-Host
                 }
                 else 
                 {
-                    Write-Host "AttemptDeployment 4"
                     New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
                 }
             }
@@ -491,8 +446,6 @@ function GenerateDeploymentName() {
 function LoadDeploymentConfig() {
     Write-Host "[Info] load the deployment configuration from [$configPath]"
     $global:parameterFileMapping = @{
-        'AnalyticsRules/Audit log data deletion.json' = $AuditDataParam
-        'AnalyticsRules/NRT MFA Rejected by User.json' = $MFARejectedParam
         'Playbooks/DataIngestionRepo.json' = $DataIngestionRepoParam
     }
     $global:prioritizedContentFiles = @()
@@ -500,7 +453,6 @@ function LoadDeploymentConfig() {
     try {
         if (Test-Path $configPath) { # Determines whether all elements of the path exists, returns $True if they do
             $deployment_config = Get-Content $configPath | Out-String | ConvertFrom-Json
-            Write-Host "LoadDeploymentConfig() deployment_config: $deployment_config"
             $parameterFileMappings = @{}
             if ($deployment_config.parameterfilemappings) {
                 $deployment_config.parameterfilemappings.psobject.properties | ForEach { $parameterFileMappings[$_.Name] = $_.Value }
@@ -542,43 +494,22 @@ function AbsolutePathWithSlash($relativePath) {
 #resolve parameter file name, return $null if there is none.
 function GetParameterFile($path) {
     $index = RelativePathWithBackslash $path
-    Write-Host "GetParameterFile() index: $index"
     $key = ($global:parameterFileMapping.Keys | ? { $_ -eq $index })
-    Write-Host "**************"
-    Write-Host "GetParameterFile() key: $key"
-    Write-Host "**************"
-    Write-Host $global:parameterFileMapping.Keys
-    Write-Host "**************"
-    Write-Host "GetParameterFile() This is path `$_: $_"
-    Write-Host "**************"
-    Write-Host "**************"
-    Write-Host $global:parameterFileMapping.Key
-    Write-Host "**************"
-    Write-Host "**************"
 
     if ($key) {
-        Write-Host $key
-        Write-Host "**************"
         $mappedParameterFile = AbsolutePathWithSlash $global:parameterFileMapping[$key]
-        Write-Host "GetParameterFile() mappedParameterFile: $mappedParameterFile"
-
         if (Test-Path $mappedParameterFile) {
             return $mappedParameterFile
         }
     }
 
-    $parameterFilePrefix = $path.TrimEnd(".json")
-    
+    $parameterFilePrefix = $path.TrimEnd(".json") 
     $workspaceParameterFile = $parameterFilePrefix + ".parameters-$WorkspaceId.json"
-    Write-Host "**************"
-    Write-Host "GetParameterFile() workspaceParameterFile: $workspaceParameterFile"
     if (Test-Path $workspaceParameterFile) {
         return $workspaceParameterFile
     }
     
     $defaultParameterFile = $parameterFilePrefix + ".parameters.json"
-    Write-Host "**************"
-    Write-Host "GetParameterFile() defaultParameterFile: $defaultParameterFile"
     if (Test-Path $defaultParameterFile) {
         return $defaultParameterFile
     }
