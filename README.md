@@ -1,4 +1,20 @@
-# Sentinel GitHub Connection
+# Description
+
+- Project created to establish repository with analytics rules, automation rules, workbooks and playbooks for Microsoft Sentinel deployment
+- ARM templates were adjusted to be re-deployable across different environments
+
+
+## Table of Contents
+1. [Sentinel GitHub Connection](#GitHubConnection)
+2. [Analytics rules](#Analytics)
+3. [Automation Rules](#Automation)
+4. [Hunting queries](#Hunting)
+5. [Playbooks](#Playbooks)
+6. [Workbooks](#Workbooks/CD)
+7. [Custom Parameters](#Parameters)
+
+
+# Sentinel GitHub Connection <a name="GitHubConnection"></a>
 
 - To deploy custom content from your GitHub or Azure DevOps repository follow steps from [official Microsoft article](https://docs.microsoft.com/en-us/azure/sentinel/ci-cd?tabs=github)
 - All resources needs to be defined as Azure Resource Management (AMR) template in json file format
@@ -9,19 +25,13 @@
     ```
     
 - Microsoft Sentinel includes many components. Many of them will work out of the box, however some of them needs to be adjusted if you are looking for scalable solution with multiple workspaces and connections
-- Order of resource deployment
-    1. Analytics rules
-    2. Automation rules
-    3. Hunting queries
-    4. Playbooks
-    5. Workbooks
 
-## Analytics rules
+## Analytics rules <a name="Analytics"></a>
 
 - Don’t need any adjustments and can be easily exported from Azure portal
 - Navigate to your Sentinel workspace, select “Analytics” and “Export” option allows to download analytics rules
 
-## Automation Rules
+## Automation Rules <a name="Automation"></a>
 
 - Requirements
     - [PowerShell 6.2 or later](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2#installing-the-msi-package)
@@ -99,7 +109,9 @@
         "displayName": "[parameters('automationRuleName')]",
         "ChangeFromHere": 3,
     ```
-        
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/49d67ec4-1b1c-44be-8131-6c36938f353b/Untitled.png)
+    
 - Edit “default value” for parameter “automationRuleName”, line 16
     
     ```json
@@ -107,7 +119,7 @@
     ```
     
 
-## Hunting queries
+## Hunting queries <a name="Hunting"></a>
 
 - You will have to structure your ARM template with parameters specific to your query
 - To get your hunting query you can use [powershell script available in repository](https://github.com/Pavel-Hrabec/Sentinel-Automation/blob/main/Export-Queries.ps1)
@@ -138,34 +150,34 @@
 - Changes are required for the following parameters: displayname, query, description, techniques, tactics
     
     ```json
-"displayname": {
-    "type": "string",
-    "defaultValue": "",
+    "displayname": {
+        "type": "string",
+        "defaultValue": "",
+        }
+    },
+    "query": {
+        "type": "string",
+        "defaultValue": ""         
+    },
+    "description": {
+        "type": "string",
+        "defaultValue": ""
+        }
+    },
+    "techniques": {
+        "type": "string",
+        "defaultValue": ""
+        }
+    },
+    "tactics": {
+        "type": "string",
+        "defaultValue": ""
+        }
     }
-},
-"query": {
-    "type": "string",
-    "defaultValue": ""
-},
-"description": {
-    "type": "string",
-    "defaultValue": ""
-    }
-},
-"techniques": {
-    "type": "string",
-    "defaultValue": ""
-    }
-},
-"tactics": {
-    "type": "string",
-    "defaultValue": ""
-    }
-}
     ```
     
 
-## Playbooks
+## Playbooks <a name="Playbooks"></a>
 
 - Template schema version: 2019-04-01 is required
 - Download Azure Logic App/Playbook ARM Template Generator tool from [Azure Sentinel GitHub repository](https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator)
@@ -293,7 +305,7 @@
     ```
     
 
-## Workbooks
+## Workbooks <a name="Workbooks"></a>
 
 - Format needs to be in ARM template. You can’t import from gallery view in workbook format
 - In azure portal navigate to your Sentinel workspace and under Threat Management category select “Workbooks”. In “My workbooks” section pick  your desired workbook for export and select “View save workbook”. From here select “edit” and  “advanced editor” option will be available, which allows to download ARM template.
@@ -348,7 +360,9 @@
 - After you import your workbooks and you want to see them in “My workbooks” tab you will have to initially save them
     - Navigate to Microsoft Sentinel > Workbooks > Add workbook > Open > Select your workbook > Save
 
-# How to pass custom parameters from Pipeline
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/04d5081e-d6bf-4ab4-831a-43515b140597/Untitled.png)
+
+# How to pass custom parameters from Pipeline <a name="Parameters"></a>
 
 - For this to work multiple steps are required.
     1. Parameters are added as environment variables in Pipeline 
@@ -360,6 +374,8 @@
 - First of all environment variable needs to be added to Github actions
     - Navigate to your repository, go to “Settings”. Under Security section select “Secrets” and “Actions”
     - Here you can extend your secrets with “New repository secret” option - pick name and secret
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0cecf8a6-1fc0-429a-8d02-3cf1f15aec65/Untitled.png)
     
 - Extend your pipeline with the new variable, edit sentinel-deploy-xxxyyyzzz.yml
     
