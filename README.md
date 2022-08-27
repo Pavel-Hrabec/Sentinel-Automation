@@ -10,7 +10,7 @@
 3. [Automation Rules](#Automation)
 4. [Hunting queries](#Hunting)
 5. [Playbooks](#Playbooks)
-6. [Workbooks](#Workbooks/CD)
+6. [Workbooks](#Workbooks)
 7. [Custom Parameters](#Parameters)
 
 
@@ -359,7 +359,7 @@
 - After you import your workbooks and you want to see them in “My workbooks” tab you will have to initially save them
     - Navigate to Microsoft Sentinel > Workbooks > Add workbook > Open > Select your workbook > Save
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/04d5081e-d6bf-4ab4-831a-43515b140597/Untitled.png)
+![Workbooks](https://github.com/Pavel-Hrabec/Sentinel-Automation/blob/main/Images/Workbooks.png?raw=true)
 
 # How to pass custom parameters from Pipeline <a name="Parameters"></a>
 
@@ -374,7 +374,7 @@
     - Navigate to your repository, go to “Settings”. Under Security section select “Secrets” and “Actions”
     - Here you can extend your secrets with “New repository secret” option - pick name and secret
     
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0cecf8a6-1fc0-429a-8d02-3cf1f15aec65/Untitled.png)
+    ![Variables](https://github.com/Pavel-Hrabec/Sentinel-Automation/blob/main/Images/Repository%20Secrets.png?raw=true)
     
 - Extend your pipeline with the new variable, edit sentinel-deploy-xxxyyyzzz.yml
     
