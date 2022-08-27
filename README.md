@@ -378,7 +378,7 @@
     
 - Extend your pipeline with the new variable, edit sentinel-deploy-xxxyyyzzz.yml
     
-    ```powershell
+    ```yaml
     jobs:
       deploy-content:
         runs-on: windows-latest
