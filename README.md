@@ -24,7 +24,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
     ```
     
-- Microsoft Sentinel includes many components. Many of them will work out of the box, however some of them needs to be adjusted if you are looking for scalable solution with multiple workspaces and connections
+- Microsoft Sentinel includes many components. Some of them will work out of the box, however some of them needs to be adjusted if you are looking for scalable solution with multiple workspaces and connections
 
 ## Analytics rules <a name="Analytics"></a>
 
@@ -110,7 +110,6 @@
         "ChangeFromHere": 3,
     ```
     
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/49d67ec4-1b1c-44be-8131-6c36938f353b/Untitled.png)
     
 - Edit “default value” for parameter “automationRuleName”, line 16
     
