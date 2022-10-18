@@ -29,7 +29,7 @@
 ## Analytics rules <a name="Analytics"></a>
 
 - Don’t need any adjustments and can be easily exported from Azure portal
-- Navigate to your Sentinel workspace, select “Analytics” and “Export” option allows to download analytics rules
+- Navigate to your Sentinel workspace, select “Analytics”. “Export” option allows to download analytics rules
 
 ## Automation Rules <a name="Automation"></a>
 
@@ -378,7 +378,7 @@
     
 - Extend your pipeline with the new variable, edit sentinel-deploy-xxxyyyzzz.yml
     
-    ```powershell
+    ```yaml
     jobs:
       deploy-content:
         runs-on: windows-latest
