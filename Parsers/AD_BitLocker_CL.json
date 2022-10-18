@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/5c70f7ea-3ebf-459f-a3e0-0d735111380c')]",
+      "properties": {
+        "etag": "*",
+        "category": "Security",
+        "displayName": "AD_BitLocker_CL",
+        "FunctionAlias": "AD_BitLocker_CL",
+        "query": "ActiveDirectory_CL
+| extend RawData=replace(@'\"', @'', RawData)
+| extend CSVFields  = split(RawData, '|')
+| extend ObjectClass = tostring(CSVFields[0]),
+    BlRecoveryPwd = tostring(CSVFields[1]),
+    DistinguishedName = tostring(CSVFields[2])
+| where ObjectClass == \"msFVE-RecoveryInformation\"
+",
+        "version": 2,
+        "functionParameters": "disabled:bool=False"
+      }
+    }
+
+  ]
+}
