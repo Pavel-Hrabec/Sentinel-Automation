@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/5c70f7ea-3ebf-459f-a3e0-0d735684480c')]",
+      "properties": {
+        "etag": "*",
+        "category": "Security",
+        "displayName": "AD_Domain_CL",
+        "FunctionAlias": "AD_Domain_CL",
+        "query": "ActiveDirectory_CL
+| extend RawData=replace(@'\"', @'', RawData)
+| extend CSVFields  = split(RawData, '|')
+| extend ComputerObjectDN = tostring(CSVFields[0]),
+    Domain = tostring(CSVFields[1]),
+    Enabled = tostring(CSVFields[2]),
+    Forest = tostring(CSVFields[3]),
+    HostName = tostring(CSVFields[4]),
+    InvocationId = tostring(CSVFields[5]),
+    IPv4Address = tostring(CSVFields[6]),
+    IPv6Address = tostring(CSVFields[7]),
+    IsGlobalCatalog = tostring(CSVFields[8]),
+    IsReadOnly = tostring(CSVFields[9]),
+    LdapPort = tostring(CSVFields[10]),
+    Name = tostring(CSVFields[11]),
+    NTDSSettingsObjectDN = tostring(CSVFields[12]),
+    OperatingSystem = tostring(CSVFields[13]),
+    OperatingSystemHotfix = tostring(CSVFields[14]),
+    OperatingSystemServicePack = tostring(CSVFields[15]),
+    OperatingSystemVersion = tostring(CSVFields[16]),
+    OperationMasterRoles = tostring(CSVFields[17]),
+    ServerObjectDN = tostring(CSVFields[18]),
+    ServerObjectGuid = tostring(CSVFields[19]),
+    Site = tostring(CSVFields[20]),
+    SslPort = tostring(CSVFields[21])
+| where RawData has \"OU=Domain Controllers\" and Enabled in ('True','False')
+",
+        "version": 2,
+        "functionParameters": "disabled:bool=False"
+      }
+    }
+
+  ]
+}

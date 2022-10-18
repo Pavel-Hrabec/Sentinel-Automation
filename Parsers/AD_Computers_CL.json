@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/5c70f7ea-3ebf-459f-a3e0-0d725686380c')]",
+      "properties": {
+        "etag": "*",
+        "category": "Security",
+        "displayName": "AD_Computers_CL",
+        "FunctionAlias": "AD_Computers_CL",
+        "query": "ActiveDirectory_CL
+| extend RawData=replace(@'\"', @'', RawData)
+| extend CSVFields  = split(RawData, '|')
+| extend AccountNotDelegated = tostring(CSVFields[0]),
+    AllowReversiblePasswordEncryption = tostring(CSVFields[1]),
+    BadLogonCount = tostring(CSVFields[2]),
+    badPwdCount = tostring(CSVFields[3]),
+    CannotChangePassword = tostring(CSVFields[4]),
+    CanonicalName = tostring(CSVFields[5]),
+    CN = tostring(CSVFields[6]),
+    Created = format_datetime(todatetime(CSVFields[7]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    Description = tostring(CSVFields[8]),
+    DisplayName = tostring(CSVFields[9]),
+    DistinguishedName = tostring(CSVFields[10]),
+    DNSHostName  = tostring(CSVFields[11]),
+    DoesNotRequirePreAuth = tostring(CSVFields[12]),
+    Enabled = tostring(CSVFields[13]),
+    IPv4Address = tostring(CSVFields[14]),
+    IPv6Address = tostring(CSVFields[15]),
+    isCriticalSystemObject = tostring(CSVFields[16]),
+    KerberosEncryptionType = tostring(CSVFields[17]),
+    LastBadPasswordAttempt = format_datetime(todatetime(CSVFields[18]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    LastLogonDate = format_datetime(todatetime(CSVFields[19]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    logonCount = tostring(CSVFields[20]),
+    MemberOf = tostring(CSVFields[21]),
+    Modified = format_datetime(todatetime(CSVFields[22]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    Name = tostring(CSVFields[23]),
+    ObjectClass = tostring(CSVFields[24]),
+    ObjectGUID = tostring(CSVFields[25]),
+    OperatingSystem = tostring(CSVFields[26]),
+    OperatingSystemHotfix = tostring(CSVFields[27]),
+    OperatingSystemServicePack = tostring(CSVFields[28]),
+    OperatingSystemVersion = tostring(CSVFields[29]),
+    PasswordExpired = tostring(CSVFields[30]),
+    PasswordLastSet = format_datetime(todatetime(CSVFields[31]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    PasswordNeverExpires = tostring(CSVFields[32]),
+    PasswordNotRequired = tostring(CSVFields[33]),
+    PrimaryGroup = tostring(CSVFields[34]),
+    primaryGroupID = tostring(CSVFields[35]),
+    ProtectedFromAccidentalDeletion = tostring(CSVFields[36]),
+    SamAccountName = tostring(CSVFields[37]),
+    SID = tostring(CSVFields[38]),
+    TrustedForDelegation = tostring(CSVFields[39]),
+    TrustedToAuthForDelegation = tostring(CSVFields[40]),
+    UseDESKeyOnly = tostring(CSVFields[41]),
+    userAccountControl = tostring(CSVFields[42]),
+    UserPrincipalName = tostring(CSVFields[43])
+| where ObjectClass == \"computer\"
+| extend MemberOf  = split(MemberOf, ';')
+",
+        "version": 2,
+        "functionParameters": "disabled:bool=False"
+      }
+    }
+
+  ]
+}

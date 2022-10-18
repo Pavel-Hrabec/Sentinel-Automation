@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/5c70f7ea-3ebf-459f-a3e0-0d735686470c')]",
+      "properties": {
+        "etag": "*",
+        "category": "Security",
+        "displayName": "AD_Schema_CL",
+        "FunctionAlias": "AD_Schema_CL",
+        "query": "ActiveDirectory_CL
+| extend RawData=replace(@'\"', @'', RawData)
+| extend CSVFields  = split(RawData, '|')
+| extend  CanonicalName = tostring(CSVFields[0]),
+    CN = tostring(CSVFields[1]),
+    Created = format_datetime(todatetime(CSVFields[2]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    DistinguishedName = tostring(CSVFields[3]),
+    fSMORoleOwner = tostring(CSVFields[4]),
+    masteredBy = tostring(CSVFields[5]),
+    Modified = format_datetime(todatetime(CSVFields[6]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    ObjectClass = tostring(CSVFields[7]),
+    objectVersion = tostring(CSVFields[8])    
+| where ObjectClass == 'dMD'
+| extend SchemaVersion = iff(objectVersion has '88', 'Windows Server 2019/2022',
+    iff (objectVersion has '88', 'Windows Server 2019-2022',
+    iff (objectVersion has '87', 'Windows Server 2016',    
+    iff (objectVersion has '69', 'Windows Server 2012 R2',
+    iff (objectVersion has '56', 'Windows Server 2012',
+    iff (objectVersion has '47', 'Windows Server 2008 R2',
+    iff (objectVersion has '44', 'Windows Server 2008',
+    iff (objectVersion has '31', 'Windows Server 2003 R2',
+    iff (objectVersion has '30', 'Windows Server 2003',
+    iff (objectVersion has '13', 'Windows Server 2000', objectVersion))))))))))
+",
+        "version": 2,
+        "functionParameters": "disabled:bool=False"
+      }
+    }
+
+  ]
+}

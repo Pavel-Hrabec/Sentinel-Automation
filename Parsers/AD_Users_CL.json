@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/5c70f7ea-3ebf-459f-a3e0-0d735686375c')]",
+      "properties": {
+        "etag": "*",
+        "category": "Security",
+        "displayName": "AD_Users_CL",
+        "FunctionAlias": "AD_Users_CL",
+        "query": "ActiveDirectory_CL
+ActiveDirectory_CL
+| extend RawData=replace(@'\"', @'', RawData)
+| extend CSVFields  = split(RawData, '|')
+| extend AccountNotDelegated = tostring(CSVFields[0]),
+    AllowReversiblePasswordEncryption = tostring(CSVFields[1]),
+    BadLogonCount = tostring(CSVFields[2]),
+    badPwdCount = tostring(CSVFields[3]),
+    CannotChangePassword = tostring(CSVFields[4]),
+    CanonicalName = tostring(CSVFields[5]),
+    City = tostring(CSVFields[6]),
+    CN = tostring(CSVFields[7]),
+    Company = tostring(CSVFields[8]),
+    Created = format_datetime(todatetime(CSVFields[9]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    Department = tostring(CSVFields[10]),
+    Description = tostring(CSVFields[11]),
+    DistinguishedName = tostring(CSVFields[12]),
+    EmailAddress  = tostring(CSVFields[13]),
+    EmployeeNumber = tostring(CSVFields[14]),
+    Enabled = tostring(CSVFields[15]),
+    LastLogonDate = format_datetime(todatetime(CSVFields[16]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    logonCount = tostring(CSVFields[17]),
+    MemberOf = tostring(CSVFields[18]),
+    MobilePhone = tostring(CSVFields[19]),
+    Modified = format_datetime(todatetime(CSVFields[20]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    Name = tostring(CSVFields[21]),
+    ObjectClass = tostring(CSVFields[22]),
+    ObjectGUID = tostring(CSVFields[23]),
+    PasswordExpired = tostring(CSVFields[24]),
+    PasswordLastSet = format_datetime(todatetime(CSVFields[25]), \"MM/dd/yyyy hh:mm:ss tt\"),
+    PasswordNeverExpires = tostring(CSVFields[26]),
+    PasswordNotRequired = tostring(CSVFields[27]),
+    PrimaryGroup = tostring(CSVFields[28]),
+    primaryGroupID = tostring(CSVFields[29]),
+    SamAccountName = tostring(CSVFields[30]),
+    SID = tostring(CSVFields[31]),
+    SmartcardLogonRequired = tostring(CSVFields[32]),
+    State = tostring(CSVFields[33]),
+    Title = tostring(CSVFields[34]),
+    UseDESKeyOnly = tostring(CSVFields[35]),
+    userAccountControl = tostring(CSVFields[36]),
+    UserPrincipalName = tostring(CSVFields[37])
+| where ObjectClass == 'user'
+| extend MemberOf  = split(MemberOf, ';')
+",
+        "version": 2,
+        "functionParameters": "disabled:bool=False"
+      }
+    }
+
+  ]
+}
