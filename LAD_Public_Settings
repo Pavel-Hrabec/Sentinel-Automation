@@ -672,7 +672,7 @@
                 ]
             },
             "syslogEvents": {
-                "sinks": "SyslogJsonBlob,LoggingEventHub",
+                "sinks": "syslog",
                 "syslogEventConfiguration": {
                     "LOG_AUTH": "LOG_DEBUG",
                     "LOG_AUTHPRIV": "LOG_DEBUG",
