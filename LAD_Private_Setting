@@ -6,6 +6,10 @@
             {
                 "name": "SyslogJsonBlob",
                 "type": "JsonBlob"
+            },
+            {
+                "name": "MyJsonMetricsBlob",
+                "type": "JsonBlob"
             }
         ]
     }
