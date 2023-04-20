@@ -4,7 +4,7 @@
     "sinksConfig": {
         "sink": [
             {
-                "name": "syslog",
+                "name": "syslogblob",
                 "type": "JsonBlob"
             }
         ]
