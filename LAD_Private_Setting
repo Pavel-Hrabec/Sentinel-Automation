@@ -1,6 +1,6 @@
 {
-    "storageAccountName": "syslogserver",
-    "storageAccountSasToken": "sv=xxxx-xx-xx&ss=bt&srt=co&sp=wlacu&st=yyyy-yy-yyT21%3A22%3A00Z&se=zzzz-zz-zzT21%3A22%3A00Z&sig=fake_signature",
+    "storageAccountName": "STORAGE_ACCOUNT_NAME_REPLACEMENT",
+    "storageAccountSasToken": "SAS_TOKEN_REPLACEMENT",
     "sinksConfig": {
         "sink": [
             {
